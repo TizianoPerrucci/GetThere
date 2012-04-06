@@ -1,0 +1,12 @@
+Install node.js http://nodejs.org/#download
+
+Below a list of command to run from shell.
+
+Fetch the application dependencies:
+$ npm install -d
+
+Run the application:
+$ node getthere.js
+
+
+Once you start the application you can reach it on http://localhost:8080
