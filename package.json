@@ -1,6 +1,9 @@
 {
-    "name": "Get There",
+    "name": "getthere",
     "version": "0.0.1",
+    "engines": {
+      "node": ">= 0.4.0"
+    },
     "dependencies": {
         "express": "2.5.8",
         "jade": ">= 0.0.1"
