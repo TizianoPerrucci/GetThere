@@ -1,17 +1,8 @@
 Install node.js http://nodejs.org/#download
-
-Below a list of command to run from shell.
-
-Fetch the application dependencies:
-$ npm install -d
+Install foreman https://github.com/ddollar/foreman
 
 Run the application:
-$ node app.js
-
-
-Once you start the application you can reach it on http://localhost:8080
-
-
+$ foreman start
 
 
 --------------- Developer info ---------------
