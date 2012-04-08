@@ -6,7 +6,15 @@ Fetch the application dependencies:
 $ npm install -d
 
 Run the application:
-$ node getthere.js
+$ node app.js
 
 
 Once you start the application you can reach it on http://localhost:8080
+
+
+
+
+--------------- Developer info ---------------
+
+Libraries version:
+$ npm ls

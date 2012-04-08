@@ -1,0 +1,10 @@
+h2 All lifts
+
+ul
+each lift, i in lifts
+  li
+    #{lift.when}, #{lift.where}
+    a(href='/lifts/#{i}', title='Show lift') Show
+    a(href='/lifts/#{i}/edit', title='Edit lift') Edit
+
+a(href='/lifts/new', title='New lift') New
