@@ -9,3 +9,9 @@ $ foreman start
 
 Libraries version:
 $ npm ls
+
+Run with code changes enabled:
+$ supervisor app.js
+
+Redeploy application:
+$ git push heroku master
