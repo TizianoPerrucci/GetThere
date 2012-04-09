@@ -6,7 +6,10 @@ module.exports = {
     define: function (app) {
 
         liftModel.defineModel(mongoose, function () {
-            mongoose.connect(app.set('db-uri'));
+            var dbUri = app.set('db-uri');
+            console.log('Mongo - connecting to ' + dbUri);
+            mongoose.connect(dbUri);
+            console.log('Mongo - connected');
         });
 
         var Lift = mongoose.model('Lift');
