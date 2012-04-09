@@ -7,9 +7,10 @@ module.exports = {
 
         liftModel.defineModel(mongoose, function () {
             var dbUri = app.set('db-uri');
-            console.log('Mongo - connecting to ' + dbUri);
-            mongoose.connect(dbUri);
-            console.log('Mongo - connected');
+            mongoose.connect(dbUri, function (err) {
+                if (err) throw err;
+                console.log('Mongo connected, uri: ' + dbUri);
+            });
         });
 
         var Lift = mongoose.model('Lift');
@@ -110,10 +111,10 @@ module.exports = {
         app.post("/search", function (req, res) {
             var from = req.body.lift.from;
             //start with and ignore case
-            Lift.find({from: { $regex : from + '.*', $options: 'i' } }, function (err, lifts) {
+            Lift.find({from: new RegExp('^' + from + '.*', 'i') }, function (err, lifts) {
                 if (err) throw err;
                 console.log('Lifts: ' + lifts);
-                res.render('./lifts/list', {title: 'Lift from: \'from\'',lifts: lifts, all: true});
+                res.render('./lifts/list', {title: 'Lift from: \'' + from + '\'',lifts: lifts, all: true});
             });
         });
 
