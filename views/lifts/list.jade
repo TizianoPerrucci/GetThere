@@ -1,12 +1,12 @@
 h2= title
 
 ul
-each lift, i in lifts
-  li
-    #{lift.from}, #{lift.to}, #{lift.date}, #{lift.time}, #{lift.time_flexibility}
-    a(href='/lifts/#{lift._id}', title='Show lift') Show
-    a(href='/lifts/#{lift._id}/edit', title='Edit lift') Edit
-    a(href='/lifts/#{lift._id}/delete', title='Delete lift', onClick='if (!confirm("Confirm deletion?")) return false;') Delete
+  each lift, i in lifts
+    li
+      #{lift.from}, #{lift.to}, #{lift.date}, #{lift.time}, #{lift.time_flexibility}
+      a(href='/lifts/#{lift._id}', title='Show lift') Show
+      a(href='/lifts/#{lift._id}/edit', title='Edit lift') Edit
+      a(href='/lifts/#{lift._id}/delete', title='Delete lift', onClick='if (!confirm("Confirm deletion?")) return false;') Delete
 
 div
   a(href='/lifts/new', title='New lift') New

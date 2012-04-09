@@ -13,7 +13,8 @@ module.exports = {
             });
         });
 
-        var Lift = mongoose.model('Lift');
+        //make model public to all app
+        var Lift = app.Lift = mongoose.model('Lift');
 
         app.get(('/'), function (req, res) {
             res.redirect("/lifts");
@@ -22,7 +23,7 @@ module.exports = {
         app.get('/lifts', function (req, res) {
             Lift.find({}, function (err, lifts) {
                 if (err) throw err;
-                console.log('Lifts: ' + lifts);
+                console.log('Listing lifts: ' + lifts);
                 res.render('./lifts/list', {title: 'All lifts', lifts: lifts, all: false});
             });
         });
@@ -35,7 +36,7 @@ module.exports = {
         app.get('/lifts/:id', function (req, res) {
             Lift.findById(req.params.id, function (err, lift) {
                 if (err) throw err;
-                console.log('Lift: ' + lift);
+                console.log('Get lift: ' + lift);
                 res.render('./lifts/show', {lift:lift});
             });
         });
@@ -113,7 +114,7 @@ module.exports = {
             //start with and ignore case
             Lift.find({from: new RegExp('^' + from + '.*', 'i') }, function (err, lifts) {
                 if (err) throw err;
-                console.log('Lifts: ' + lifts);
+                console.log('Search lifts: ' + lifts);
                 res.render('./lifts/list', {title: 'Lift from: \'' + from + '\'',lifts: lifts, all: true});
             });
         });
