@@ -16,5 +16,11 @@ $ supervisor app.js
 Run tests:
 $ ./node_modules/expresso/bin/expresso
 
+
+
+--------------- Production info ---------------
+
+The application is deployed on Heroku and accessible on http://getthere.herokuapp.com
+
 Redeploy application:
 $ git push heroku master

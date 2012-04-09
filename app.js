@@ -30,7 +30,6 @@ app.configure('test', function() {
 });
 
 app.configure('production', function () {
-    // mongodb://<user>:<password>@ds031747.mongolab.com:31747/heroku_app3798339
     app.set('db-uri', 'mongodb://mongo:mongo00@ds031747.mongolab.com:31747/heroku_app3798339');
     app.use(express.errorHandler());
 });
