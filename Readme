@@ -13,5 +13,8 @@ $ npm ls
 Run with code changes enabled:
 $ supervisor app.js
 
+Run tests:
+$ ./node_modules/expresso/bin/expresso
+
 Redeploy application:
 $ git push heroku master

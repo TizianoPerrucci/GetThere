@@ -1,14 +1,24 @@
-module.exports.configure = defineApp
+var mongoose = require('mongoose'),
+    liftModel = require('./model.js');
+
 
 function defineApp(app) {
 
-    function Lift(where, when) {}
+    liftModel.defineModel(mongoose, function () {
+        mongoose.connect(app.set('db-uri'));
+    });
 
-    var inMemoryData = new Array();
+    var Lift = mongoose.model('Lift');
 
 
     app.get('/lifts', function (req, res) {
-        res.render('./lifts/list', {lifts:inMemoryData});
+
+        Lift.find({}, function (err, lifts) {
+            if (err) throw err;
+            console.log('Lifts: ' + lifts);
+            res.render('./lifts/list', {lifts:lifts});
+        });
+
     });
 
     app.get("/lifts/new", function (req, res) {
@@ -16,45 +26,74 @@ function defineApp(app) {
     });
 
     app.get('/lifts/:id', function (req, res) {
-        var id = req.params.id;
-        res.render('./lifts/show', {lift:inMemoryData[id]});
+        Lift.findById(req.params.id, function (err, lift) {
+            if (err) throw err;
+            console.log('Lift: ' + lift);
+            res.render('./lifts/show', {lift: lift});
+        });
     });
 
     app.get("/lifts/:id/edit", function (req, res) {
-        var id = req.params.id;
-        res.render('./lifts/edit', {lift:inMemoryData[id], id:id});
+        Lift.findById(req.params.id, function (err, lift) {
+            if (err) throw err;
+            res.render('./lifts/edit', {lift: lift});
+        });
     });
 
 
     //Create lift
     app.post('/lifts', function (req, res) {
-        var lift = req.body.lift;
-        inMemoryData.push(lift);
+        var postData = req.body.lift;
 
-        console.log('Received creation for lift: where ' + lift.where + ' - when ' + lift.when);
+        var lift = new Lift();
+        lift.from = postData.from;
+        lift.to = postData.to;
+        lift.date = postData.date;
+        lift.time = postData.time;
+        lift.time_flexibility = postData.time_flexibility;
 
-        res.redirect('/lifts');
+        lift.save(function (err) {
+            if (err) throw err;
+            console.log('Lift created: ' + lift);
+            res.redirect('/lifts');
+        });
     });
 
     //Update lift
     app.put('/lifts/:id', function (req, res) {
-        var lift = req.body.lift;
-        var id = req.params.id;
-        inMemoryData[id] = lift;
+        Lift.findById(req.params.id, function (err, lift) {
+            if (err) throw err;
 
-        console.log('Received update for lift ' + id + ': where ' + lift.where + ' - when ' + lift.when);
+            var postData = req.body.lift;
+            lift.from = postData.from;
+            lift.to = postData.to;
+            lift.date = postData.date;
+            lift.time = postData.time;
+            lift.time_flexibility = postData.time_flexibility;
+
+            lift.save(function(err,lift){
+                if (err) throw err;
+                console.log('Lift updated: ' + lift);
+            });
+        });
 
         res.redirect('/lifts');
     });
 
     //Delete lift
-    app.del('/lifts/:id', function (req, res) {
-        var id = req.params.id;
-        inMemoryData[id] = null;
+    app.get('/lifts/:id/delete', function (req, res) {
+        Lift.findById(req.params.id, function (err, lift) {
+            if (err) throw err;
 
-        console.log('Received delete lift ' + id);
+            lift.remove(function(err) {
+                if (err) throw err;
+                console.log('lift deleted: ' + lift)
+            });
+        });
 
         res.redirect('/lifts');
     });
 
 }
+
+module.exports.configure = defineApp

@@ -3,8 +3,9 @@ h2 All lifts
 ul
 each lift, i in lifts
   li
-    #{lift.when}, #{lift.where}
-    a(href='/lifts/#{i}', title='Show lift') Show
-    a(href='/lifts/#{i}/edit', title='Edit lift') Edit
+    #{lift.from}, #{lift.to}, #{lift.date}, #{lift.time}, #{lift.time_flexibility}
+    a(href='/lifts/#{lift._id}', title='Show lift') Show
+    a(href='/lifts/#{lift._id}/edit', title='Edit lift') Edit
+    a(href='/lifts/#{lift._id}/delete', title='Delete lift') Delete
 
 a(href='/lifts/new', title='New lift') New

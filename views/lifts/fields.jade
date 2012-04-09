@@ -1,8 +1,17 @@
 div
-  label When:
-    input(name='lift[when]', value=lift.when || '')
+  label From:
+    input(name='lift[from]', value=lift.from || '')
 div
-  label Where:
-    input(name='lift[where]', value=lift.where || '')
+  label To:
+    input(name='lift[to]', value=lift.to || '')
+div
+  label Date:
+    input(name='lift[date]', value=lift.date || '')
+div
+  label Time:
+    input(name='lift[time]', value=lift.time || '')
+div
+  label Time flexibility:
+    input(name='lift[time_flexibility]', value=lift.time_flexibility || '')
 div
   input(type='submit', value='Save')
