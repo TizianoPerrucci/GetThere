@@ -11,15 +11,13 @@ module.exports = {
 
         var Lift = mongoose.model('Lift');
 
-
+        // Get lift
         app.get('/lifts', function (req, res) {
-
             Lift.find({}, function (err, lifts) {
                 if (err) throw err;
                 console.log('Lifts: ' + lifts);
-                res.render('./lifts/list', {lifts:lifts});
+                res.render('./lifts/list', {title: 'All lifts', lifts: lifts, all: false});
             });
-
         });
 
         app.get("/lifts/new", function (req, res) {
@@ -93,6 +91,21 @@ module.exports = {
             });
 
             res.redirect('/lifts');
+        });
+
+
+        //Search lift
+        app.get("/search", function (req, res) {
+            res.render('./lifts/search');
+        });
+
+        app.post("/search", function (req, res) {
+            var from = req.body.lift.from;
+            Lift.find({from: { $regex : from + '.*'} }, function (err, lifts) {
+                if (err) throw err;
+                console.log('Lifts: ' + lifts);
+                res.render('./lifts/list', {title: 'Lift from: \'from\'',lifts: lifts, all: true});
+            });
         });
 
     }
