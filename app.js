@@ -34,7 +34,7 @@ app.configure('production', function () {
 });
 
 
-require('./routes/lift.js').configure(app);
+require('./routes/lift.js').define(app);
 
 
 var port = process.env.PORT || 8080;
