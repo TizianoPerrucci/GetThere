@@ -7,14 +7,19 @@ $ foreman start
 
 --------------- Developer info ---------------
 
-Libraries version:
+Installing all dependencies:
+$ npm install -d
+
+Dependencies version:
 $ npm ls
+
 
 Run with code changes enabled:
 $ supervisor app.js
 
+
 Run tests:
-$ ./node_modules/expresso/bin/expresso
+$ ./node_modules/mocha/bin/mocha
 
 
 
