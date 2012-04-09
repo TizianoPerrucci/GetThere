@@ -19,7 +19,7 @@ $ supervisor app.js
 
 
 Run tests:
-$ ./node_modules/mocha/bin/mocha
+$ ./node_modules/mocha/bin/mocha (-d for debugging)
 
 
 

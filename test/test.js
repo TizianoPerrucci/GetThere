@@ -36,11 +36,11 @@ describe('Lift actions -', function () {
                 console.log('form submitted');
 
                 //follows redirect!
-
                 res.should.have.status(200);
-                $('ul').should.have.many('li');
+                //$('ul').should.have.many('li');
 
-                console.log('found many lifts');
+                $('li').should.have.length(1);
+                console.log('found 1 lift');
 
                 done();
             });
