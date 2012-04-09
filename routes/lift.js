@@ -11,7 +11,10 @@ module.exports = {
 
         var Lift = mongoose.model('Lift');
 
-        // Get lift
+        app.get(('/'), function (req, res) {
+            res.redirect("/lifts");
+        });
+
         app.get('/lifts', function (req, res) {
             Lift.find({}, function (err, lifts) {
                 if (err) throw err;
@@ -24,6 +27,7 @@ module.exports = {
             res.render('./lifts/new', {lift:new Lift()});
         });
 
+        // Get lift
         app.get('/lifts/:id', function (req, res) {
             Lift.findById(req.params.id, function (err, lift) {
                 if (err) throw err;
@@ -32,6 +36,7 @@ module.exports = {
             });
         });
 
+        //Edit lift
         app.get("/lifts/:id/edit", function (req, res) {
             Lift.findById(req.params.id, function (err, lift) {
                 if (err) throw err;
