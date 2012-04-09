@@ -101,7 +101,8 @@ module.exports = {
 
         app.post("/search", function (req, res) {
             var from = req.body.lift.from;
-            Lift.find({from: { $regex : from + '.*'} }, function (err, lifts) {
+            //start with and ignore case
+            Lift.find({from: { $regex : from + '.*', $options: 'i' } }, function (err, lifts) {
                 if (err) throw err;
                 console.log('Lifts: ' + lifts);
                 res.render('./lifts/list', {title: 'Lift from: \'from\'',lifts: lifts, all: true});
