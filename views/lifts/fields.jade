@@ -1,9 +1,11 @@
 div
   label From:
-    input(name='lift[from]', value=lift.from || '')
+    input(id='lift-from', name='lift[from]', value=lift.from || '')
+    input(id='lift-from-coord', name='lift[from_coord]', type='hidden')
 div
   label To:
-    input(name='lift[to]', value=lift.to || '')
+    input(id='lift-to', name='lift[to]', value=lift.to || '')
+    input(id='lift-to-coord', name='lift[to_coord]', type='hidden')
 div
   label Date:
     input(name='lift[date]', value=lift.date || '')

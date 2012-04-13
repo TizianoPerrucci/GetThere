@@ -3,6 +3,12 @@ h2 Search Lift
 form(method='post', action='/search')
   div
     label From:
-      input(name='lift[from]', value='')
+      input(name='lift[from]')
+  div
+    label To:
+      input(name='lift[to]')
+  div
+    label Date:
+      input(name='lift[date]')
   div
     input(type='submit', value='Search')

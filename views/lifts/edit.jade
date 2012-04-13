@@ -1,4 +1,4 @@
 h2 Edit Lift
-form(method='post', action='/lifts/' + lift._id)
+form(id='form-lift', method='post', action='/lifts/' + lift._id)
   input(name='_method', value='PUT', type='hidden')
   !=partial('fields', { lift: lift})

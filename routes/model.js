@@ -9,7 +9,9 @@ function defineModel(mongoose, fn) {
     var Lift = new Schema({
         '_id': ObjectId,
         'from': { type:String, index:true },
+        'from_coord': String,
         'to': String,
+        'to_coord': String,
         'date': String,
         'time': String,
         'time_flexibility': String

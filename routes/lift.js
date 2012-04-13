@@ -24,7 +24,7 @@ module.exports = {
             Lift.find({}, function (err, lifts) {
                 if (err) throw err;
                 console.log('Listing lifts: ' + lifts);
-                res.render('./lifts/list', {title: 'All lifts', lifts: lifts, all: false});
+                res.render('./lifts/list', {title:'All lifts', lifts:lifts, all:false});
             });
         });
 
@@ -56,10 +56,14 @@ module.exports = {
 
             var lift = new Lift();
             lift.from = postData.from;
+            lift.from_coord = postData.from_coord;
             lift.to = postData.to;
+            lift.to_coord = postData.to_coord;
             lift.date = postData.date;
             lift.time = postData.time;
             lift.time_flexibility = postData.time_flexibility;
+
+            //enrichWithCoordinates(lift);
 
             lift.save(function (err) {
                 if (err) throw err;
@@ -75,7 +79,9 @@ module.exports = {
 
                 var postData = req.body.lift;
                 lift.from = postData.from;
+                lift.from_coord = postData.from_coord;
                 lift.to = postData.to;
+                lift.to_coord = postData.to_coord;
                 lift.date = postData.date;
                 lift.time = postData.time;
                 lift.time_flexibility = postData.time_flexibility;
@@ -111,13 +117,21 @@ module.exports = {
 
         app.post("/search", function (req, res) {
             var from = req.body.lift.from;
+            var to = req.body.lift.to;
+            var date = req.body.lift.date;
+
             //start with and ignore case
-            Lift.find({from: new RegExp('^' + from + '.*', 'i') }, function (err, lifts) {
+            Lift.find({
+                from:new RegExp('^' + from + '.*', 'i'),
+                to:new RegExp('^' + to + '.*', 'i'),
+                date:date
+            }, function (err, lifts) {
                 if (err) throw err;
                 console.log('Search lifts: ' + lifts);
-                res.render('./lifts/list', {title: 'Lift from: \'' + from + '\'',lifts: lifts, all: true});
+                res.render('./lifts/list', {title:'Lift from: \'' + from + '\'', lifts:lifts, all:true});
             });
         });
+
 
     }
 };
