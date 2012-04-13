@@ -1,9 +1,10 @@
-// Force test environment
+// Environment settings
 process.env.NODE_ENV = 'test';
+process.env.PORT = 3000;
 
 var app = require('../app'),
         tobi = require('tobi'),
-        browser = tobi.createBrowser(8080, 'localhost');
+        browser = tobi.createBrowser(parseInt(process.env.PORT), 'localhost');
 
 // browser = tobi.createBrowser(app); //TODO doesn't seem to work with tobi 0.3.2, express 2.5.8, node 0.6.14
 
@@ -26,7 +27,7 @@ describe('Lift actions -', function () {
 
             $('form').should.have.length(1);
 
-            $('#new-lift').fill({
+            $('#form-lift').fill({
                 'lift[from]':'berlin',
                 'lift[to]':'leipzig',
                 'lift[date]':'05/05/2012',
