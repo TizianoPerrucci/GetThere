@@ -1,28 +1,22 @@
 $(document).ready(function () {
 
-    var options = {
-        types:['(cities)']
-    };
+    configureMapAutocompletion('#lift-from', '#lift-from-coord');
+    configureMapAutocompletion('#lift-to', '#lift-to-coord');
 
-    $('#lift-from').each(function (index) {
-        var autocomplete = new google.maps.places.Autocomplete(this, options);
+    function configureMapAutocompletion(elemId, coordId) {
+        var options = {
+            types:['(cities)']
+        };
 
-        google.maps.event.addListener(autocomplete, 'place_changed', function () {
-            var place = autocomplete.getPlace();
-            var location = place.geometry.location;
-            $('#lift-from-coord').val(location);
+        $(elemId).each(function (index) {
+            var autocomplete = new google.maps.places.Autocomplete(this, options);
+
+            google.maps.event.addListener(autocomplete, 'place_changed', function () {
+                var place = autocomplete.getPlace();
+                var location = place.geometry.location;
+                $(coordId).val(location);
+            });
         });
-    });
-
-    $('#lift-to').each(function (index) {
-        var autocomplete = new google.maps.places.Autocomplete(this, options);
-
-        google.maps.event.addListener(autocomplete, 'place_changed', function () {
-            var place = autocomplete.getPlace();
-            var location = place.geometry.location;
-            $('#lift-to-coord').val(location);
-        });
-    });
-
+    }
 
 });
