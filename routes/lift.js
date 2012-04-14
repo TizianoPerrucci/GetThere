@@ -1,9 +1,10 @@
 var mongoose = require('mongoose'),
-        liftModel = require('./model.js');
+        liftModel = require('./model.js'),
+        deferred = require('deferred');
 
 
 module.exports = {
-    define: function (app) {
+    define:function (app) {
 
         liftModel.defineModel(mongoose, function () {
             var dbUri = app.set('db-uri');
@@ -53,7 +54,6 @@ module.exports = {
         //Create lift
         app.post('/lifts', function (req, res) {
             var postData = req.body.lift;
-
             var lift = new Lift();
             lift.from = postData.from;
             lift.from_coord = postData.from_coord;
@@ -63,50 +63,69 @@ module.exports = {
             lift.time = postData.time;
             lift.time_flexibility = postData.time_flexibility;
 
-            //enrichWithCoordinates(lift);
-
-            lift.save(function (err) {
-                if (err) throw err;
+            lift.promiseSave()( function () {
                 console.log('Lift created: ' + lift);
                 res.redirect('/lifts');
-            });
+            }).end();  // throws error!*/
         });
 
         //Update lift
         app.put('/lifts/:id', function (req, res) {
-            Lift.findById(req.params.id, function (err, lift) {
+            var postData = req.body.lift;
+
+            var query = Lift.update({ _id:req.params.id},
+                    { $set:{
+                        from:postData.from,
+                        from_coord:postData.from_coord,
+                        to:postData.to,
+                        to_coord:postData.to_coord,
+                        date:postData.date,
+                        time:postData.time,
+                        time_flexibility:postData.time_flexibility
+                    }}
+            );
+
+            query.run(function (err, val) {
                 if (err) throw err;
-
-                var postData = req.body.lift;
-                lift.from = postData.from;
-                lift.from_coord = postData.from_coord;
-                lift.to = postData.to;
-                lift.to_coord = postData.to_coord;
-                lift.date = postData.date;
-                lift.time = postData.time;
-                lift.time_flexibility = postData.time_flexibility;
-
-                lift.save(function (err, lift) {
-                    if (err) throw err;
-                    console.log('Lift updated: ' + lift);
-                });
+                console.log("lift updated: " + val);
+                res.redirect('/lifts');
             });
 
-            res.redirect('/lifts');
+            /*
+             deferred.promisifyAsync(query.run, 2)(
+             function (val) {
+             console.log("result: " + val);
+             res.redirect('/lifts');
+             }).end();
+
+             Lift.promise(query)( function (mongoosePromise) {
+             console.log('Lift updated: ' + mongoosePromise);
+             console.log('Lift updated: ' + mongoosePromise.constructor);
+             console.log('Lift updated: ' + mongoosePromise.complete());
+             res.redirect('/lifts');
+             }).end();
+             */
+
         });
 
         //Delete lift
         app.get('/lifts/:id/delete', function (req, res) {
-            Lift.findById(req.params.id, function (err, lift) {
-                if (err) throw err;
 
-                lift.remove(function (err) {
-                    if (err) throw err;
-                    console.log('lift deleted: ' + lift)
-                });
+            var query = Lift.remove({ _id:req.params.id });
+
+            query.run(function (err, val) {
+                if (err) throw err;
+                console.log("lift removed: " + val);
+                res.redirect('/lifts');
             });
 
-            res.redirect('/lifts');
+            /*
+             Lift.promise(query)(
+             function (mongoosePromise) {
+             console.log('lift deleted: ' + mongoosePromise);
+             res.redirect('/lifts');
+             }).end();
+             */
         });
 
 
@@ -127,6 +146,7 @@ module.exports = {
                 date:date
             }, function (err, lifts) {
                 if (err) throw err;
+
                 console.log('Search lifts: ' + lifts);
                 res.render('./lifts/list', {title:'Lift from: \'' + from + '\'', lifts:lifts, all:true});
             });

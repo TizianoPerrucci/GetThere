@@ -1,7 +1,8 @@
-
 function defineModel(mongoose, fn) {
-    var Schema = mongoose.Schema,
-        ObjectId = Schema.ObjectId;
+    var deferred = require('deferred');
+
+    var Schema = mongoose.Schema;
+    var ObjectId = Schema.ObjectId;
 
     /**
      * Model: Lift
@@ -16,6 +17,21 @@ function defineModel(mongoose, fn) {
         'time': String,
         'time_flexibility': String
     });
+
+    Lift.methods.promiseSave = function () {
+        var d = deferred();
+        d.resolve(this.save(arguments));
+        return d.promise;
+    };
+
+    Lift.statics.promise = function (query) {
+        //return deferred(query.run().addBack(function(r){this.apply(r)}));
+
+        var d = deferred();
+        d.resolve(query.run());
+        return d.promise;
+    };
+
 
     mongoose.model('Lift', Lift);
 
