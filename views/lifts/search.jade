@@ -1,6 +1,8 @@
 h2 Search Lift
 
-form(method='post', action='/search')
+script(src='/nowjs/now.js')
+
+form(id='search-lift', method='post', action='/search')
   div
     label From:
       input(id='lift-from', name='lift[from]')
@@ -14,3 +16,5 @@ form(method='post', action='/search')
       input(id='lift-date', name='lift[date]')
   div
     input(type='submit', value='Search')
+
+div#search-result

@@ -35,10 +35,28 @@ app.configure('production', function () {
 });
 
 
-require('./routes/lift.js').define(app);
+var lift = require('./routes/lift.js');
+lift.initialize(app);
 
 
 var port = process.env.PORT || 8080;
 app.listen(port, function() {
     console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
+
+
+var nowjs = require("now");
+var everyone = nowjs.initialize(app, {clientWrite: true, socketio: {'log level': 2}});
+
+everyone.now.searchLift = function(from, to, date) {
+    var self = this;
+    console.log('received query - from: ' +from + ", to: " + to+ " ,date: " +date);
+
+    var query = app.Lift.find({from:new RegExp('^' + from + '.*', 'i'),to:new RegExp('^' + to + '.*', 'i'),date:date});
+    query.run(function(err, lifts) {
+        if (err) throw err;
+        console.log('Search lifts: ' + lifts.constructor);
+        //answer to client
+        self.now.showSearchResult(lifts);
+    });
+};

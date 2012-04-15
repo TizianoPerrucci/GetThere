@@ -4,7 +4,7 @@ var mongoose = require('mongoose'),
 
 
 module.exports = {
-    define:function (app) {
+    initialize:function (app) {
 
         liftModel.defineModel(mongoose, function () {
             var dbUri = app.set('db-uri');
@@ -66,7 +66,7 @@ module.exports = {
             lift.promiseSave()( function () {
                 console.log('Lift created: ' + lift);
                 res.redirect('/lifts');
-            }).end();  // throws error!*/
+            }).end();  // TODO it should throw error in case, test if it works!
         });
 
         //Update lift
