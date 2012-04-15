@@ -46,7 +46,7 @@ app.listen(port, function() {
 
 
 var nowjs = require("now");
-var everyone = nowjs.initialize(app, {clientWrite: true, socketio: {'log level': 2}});
+var everyone = nowjs.initialize(app, {clientWrite: true, socketio: {'log level': 2, transports: ['xhr-polling', 'jsonp-polling']}});
 
 everyone.now.searchLift = function(from, to, date) {
     var self = this;
