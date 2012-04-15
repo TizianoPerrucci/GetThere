@@ -14,14 +14,46 @@ $(document).ready(function () {
             now.searchLift(from, to, date);
         });
 
+        var bucchianico = new google.maps.LatLng(42.3058632, 14.182741999999962);
+        var opt = {
+            zoom:3,
+            mapTypeId:google.maps.MapTypeId.ROADMAP,
+            center:bucchianico,
+            disableDefaultUI:true
+        };
+        var map = new google.maps.Map(document.getElementById("map_canvas"), opt);
+
+        var directionsService = new google.maps.DirectionsService();
+
         now.showSearchResult = function (lifts) {
             $('#search-result').html("<p>Search Result:</p>");
+
+
             $('#search-result').append("<lu>");
             $.each(lifts, function (index, lift) {
                 $('#search-result').append('<li>' + lift.from + ', ' + lift.to + ', ' + lift.date + ', ' + lift.time +
                         ', ' + lift.time_flexibility + '</li>');
+
+                var request = {
+                    origin:lift.from_coord,
+                    destination:lift.to_coord,
+                    travelMode:google.maps.TravelMode.DRIVING
+                };
+
+                var directionsRenderer = new google.maps.DirectionsRenderer();
+                directionsRenderer.setMap(map);
+                directionsRenderer.setOptions({preserveViewport: true});
+
+                directionsService.route(request, function (result, status) {
+                    console.log("route status:" + status);
+                    if (status == google.maps.DirectionsStatus.OK) {
+                        directionsRenderer.setDirections(result);
+                    }
+                });
+
             });
             $('#search-result').append("</lu>");
+
         };
     }
 

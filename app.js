@@ -55,7 +55,7 @@ everyone.now.searchLift = function(from, to, date) {
     var query = app.Lift.find({from:new RegExp('^' + from + '.*', 'i'),to:new RegExp('^' + to + '.*', 'i'),date:date});
     query.run(function(err, lifts) {
         if (err) throw err;
-        console.log('Search lifts: ' + lifts.constructor);
+        console.log('Search lifts: ' + lifts);
         //answer to client
         self.now.showSearchResult(lifts);
     });
