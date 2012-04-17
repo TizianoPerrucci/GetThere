@@ -24,15 +24,20 @@ $(document).ready(function () {
         var map = new google.maps.Map(document.getElementById("map_canvas"), opt);
 
         var directionsService = new google.maps.DirectionsService();
+        var directions = [];
 
         now.showSearchResult = function (lifts) {
-            $('#search-result').html("<p>Search Result:</p>");
-
+            //reset
+            $('#search-result').html('');
+            $.each(directions, function(index, direction) {
+                direction.setMap(null);
+            });
+            directions = [];
 
             $('#search-result').append("<lu>");
             $.each(lifts, function (index, lift) {
-                $('#search-result').append('<li>' + lift.from + ', ' + lift.to + ', ' + lift.date + ', ' + lift.time +
-                        ', ' + lift.time_flexibility + '</li>');
+                $('#search-result').append('<li>' + lift.from + ', ' + lift.to + ', ' + lift.date + ', ' +
+                        lift.time + ', ' + lift.time_flexibility + '</li>');
 
                 var request = {
                     origin:lift.from_coord,
@@ -41,8 +46,9 @@ $(document).ready(function () {
                 };
 
                 var directionsRenderer = new google.maps.DirectionsRenderer();
+                directions[index] = directionsRenderer;
                 directionsRenderer.setMap(map);
-                directionsRenderer.setOptions({preserveViewport: true});
+                directionsRenderer.setOptions({preserveViewport:true});
 
                 directionsService.route(request, function (result, status) {
                     console.log("route status:" + status);
@@ -50,7 +56,6 @@ $(document).ready(function () {
                         directionsRenderer.setDirections(result);
                     }
                 });
-
             });
             $('#search-result').append("</lu>");
 
