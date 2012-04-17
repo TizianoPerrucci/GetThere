@@ -46,7 +46,7 @@ $(document).ready(function () {
 
                 directionsService.route(request, function (result, status) {
                     console.log("route status:" + status);
-                    if (status == google.maps.DirectionsStatus.OK) {
+                    if (status === google.maps.DirectionsStatus.OK) {
                         directionsRenderer.setDirections(result);
                     }
                 });
