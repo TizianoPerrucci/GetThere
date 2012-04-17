@@ -4,6 +4,7 @@ $(document).ready(function () {
     configureMapAutocompletion('#lift-to', '#lift-to-coord');
 
     configureDatepicker('#lift-date');
+    configureClockpick('#lift-time');
 
     //////////
 
@@ -28,6 +29,17 @@ $(document).ready(function () {
     function configureDatepicker(elemId) {
         if ($(elemId).length > 0) {
             $(elemId).datepicker();
+        }
+    }
+
+    function configureClockpick(elemId) {
+        if ($(elemId).length > 0) {
+            //http://archive.plugins.jquery.com/project/ClockPick
+            $(elemId).clockpick({
+                starthour : 0,
+                endhour : 23,
+                military : true
+            });
         }
     }
 
