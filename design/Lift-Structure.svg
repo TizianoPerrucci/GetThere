@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 13.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 14948)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="800px" height="600px" viewBox="0 0 800 600" enable-background="new 0 0 800 600" xml:space="preserve">
+<rect x="143.861" y="50.116" fill="#A8C4FF" width="315.139" height="78.265"/>
+<rect x="143.861" y="140.028" fill="#A8C4FF" width="315.139" height="141.19"/>
+<rect x="6.579" y="50.116" fill="#EEF3FF" width="133.888" height="78.265"/>
+<rect x="6.579" y="140.028" fill="#EEF3FF" width="133.888" height="141.19"/>
+<text transform="matrix(1 0 0 1 148.0537 43.2832)" font-family="'MyriadPro-Regular'" font-size="21.5299">New lift</text>
+<text transform="matrix(1 0 0 1 148.9854 67.8564)" font-family="'MyriadPro-Regular'" font-size="14.7108">From</text>
+<rect x="211.04" y="57.163" fill="#ECEDED" width="137.199" height="14.325"/>
+<text transform="matrix(1 0 0 1 148.9854 115.375)" font-family="'MyriadPro-Regular'" font-size="14.7108">To</text>
+<rect x="211.04" y="104.681" fill="#ECEDED" width="137.199" height="14.325"/>
+<text transform="matrix(1 0 0 1 148.9854 156.8369)" font-family="'MyriadPro-Regular'" font-size="14.7108">Date</text>
+<text transform="matrix(1 0 0 1 32.3184 67.8564)" font-family="'MyriadPro-Regular'" font-size="14.7108">Geo</text>
+<text transform="matrix(1 0 0 1 32.3184 156.8369)" font-family="'MyriadPro-Regular'" font-size="14.7108">Time/Date</text>
+<text transform="matrix(1 0 0 1 462.5977 156.8369)" fill="#FBB03B" font-family="'MyriadPro-Regular'" font-size="14.7108">Popup Calendar</text>
+<text transform="matrix(1 0 0 1 462.5977 308.2637)" fill="#FBB03B" font-family="'MyriadPro-Regular'" font-size="14.7108">number</text>
+<text transform="matrix(1 0 0 1 462.5977 363.9824)" fill="#FBB03B" font-family="'MyriadPro-Regular'" font-size="14.7108">(please insert this, for experiments in future)</text>
+<text transform="matrix(1 0 0 1 462.5977 183.3916)" fill="#FBB03B" font-family="'MyriadPro-Regular'" font-size="14.7108">drop down clock?</text>
+<text transform="matrix(1 0 0 1 462.5977 208.082)" fill="#FBB03B" font-family="'MyriadPro-Regular'" font-size="14.7108">drop down choise</text>
+<rect x="211.04" y="146.143" fill="#ECEDED" width="137.199" height="14.326"/>
+<text transform="matrix(1 0 0 1 148.9854 92.082)" font-family="'MyriadPro-Regular'" font-size="14.7108">Via</text>
+<rect x="211.04" y="81.388" fill="#ECEDED" width="137.199" height="14.325"/>
+<rect x="329.568" y="81.388" fill="#ECEDED" width="14.326" height="14.325"/>
+<text transform="matrix(1 0 0 1 332.0342 92.082)" font-family="'MyriadPro-Regular'" font-size="14.7108">+</text>
+<text transform="matrix(1 0 0 1 215.6982 156.8369)" fill="#FF0000" font-family="'Courier'" font-size="12.6063">Monday, 1.1.2013</text>
+<text transform="matrix(1 0 0 1 148.9854 183.8569)" font-family="'MyriadPro-Regular'" font-size="14.7108">Time</text>
+<rect x="211.04" y="173.164" fill="#ECEDED" width="137.199" height="14.325"/>
+<text transform="matrix(1 0 0 1 215.6982 183.8569)" fill="#FF0000" font-family="'Courier'" font-size="12.6063">00:00</text>
+<text transform="matrix(1 0 0 1 166.1768 205.2866)" font-family="'MyriadPro-Regular'" font-size="14.7108">Flexible</text>
+<rect x="228.231" y="194.593" fill="#ECEDED" width="137.2" height="14.325"/>
+<text transform="matrix(1 0 0 1 232.8896 205.2866)" fill="#FF0000" font-family="'Courier'" font-size="12.6063">Minutes</text>
+<rect x="228.231" y="213.693" fill="#ECEDED" width="137.2" height="14.326"/>
+<text transform="matrix(1 0 0 1 232.8896 224.3867)" fill="#FF0000" font-family="'Courier'" font-size="12.6063">Hours</text>
+<rect x="228.231" y="232.794" fill="#ECEDED" width="137.2" height="14.325"/>
+<text transform="matrix(1 0 0 1 232.8896 243.4873)" fill="#FF0000" font-family="'Courier'" font-size="12.6063">minutes</text>
+<text transform="matrix(1 0 0 1 246.8896 262.7725)" font-family="'Courier'" font-size="12.6063">only before</text>
+<text transform="matrix(1 0 0 1 373.4775 262.7725)" font-family="'Courier'" font-size="12.6063">only after</text>
+<g>
+	<rect x="353.819" y="252.079" fill="#ECEDED" stroke="#000000" stroke-width="0.5" width="14.325" height="14.325"/>
+	<polyline fill="none" stroke="#FF0000" points="356.385,260.009 359.3,264.308 366.732,253.742 	"/>
+</g>
+<g>
+	<rect x="228.296" y="252.079" fill="#ECEDED" stroke="#000000" stroke-width="0.5" width="14.325" height="14.325"/>
+	<polyline fill="none" stroke="#FF0000" points="230.862,260.009 233.777,264.308 241.209,253.742 	"/>
+</g>
+<rect x="143.861" y="290.799" fill="#A8C4FF" width="315.139" height="160.837"/>
+<rect x="6.579" y="290.799" fill="#EEF3FF" width="133.888" height="160.837"/>
+<text transform="matrix(1 0 0 1 148.9854 307.6074)" font-family="'MyriadPro-Regular'" font-size="14.7108">free seats</text>
+<text transform="matrix(1 0 0 1 148.9854 346.6191)" font-family="'MyriadPro-Regular'" font-size="14.7108">Trip type</text>
+<text transform="matrix(1 0 0 1 32.3184 307.6074)" font-family="'MyriadPro-Regular'" font-size="14.7108">extra</text>
+<rect x="258.238" y="296.914" fill="#ECEDED" width="24.337" height="14.326"/>
+<text transform="matrix(1 0 0 1 262.8965 307.6074)" fill="#FF0000" font-family="'Courier'" font-size="12.6063">3</text>
+<text transform="matrix(1 0 0 1 170.1943 364.0879)" font-family="'Courier'" font-size="12.6063">fast to destination</text>
+<text transform="matrix(1 0 0 1 355.124 364.0879)" font-family="'Courier'" font-size="12.6063">road trip</text>
+<g>
+	<rect x="335.465" y="353.395" fill="#ECEDED" stroke="#000000" stroke-width="0.5" width="14.325" height="14.326"/>
+	<polyline fill="none" stroke="#FF0000" points="338.031,361.324 340.946,365.624 348.379,355.059 	"/>
+</g>
+<g>
+	<rect x="151.601" y="353.395" fill="#ECEDED" stroke="#000000" stroke-width="0.5" width="14.325" height="14.326"/>
+	<polyline fill="none" stroke="#FF0000" points="154.167,361.324 157.082,365.624 164.514,355.059 	"/>
+</g>
+<text transform="matrix(1 0 0 1 148.9854 392.7871)" font-family="'MyriadPro-Regular'" font-size="14.7108">Trip type</text>
+<text transform="matrix(1 0 0 1 170.1943 410.2559)" font-family="'Courier'" font-size="12.6063">Much space for luggage</text>
+<g>
+	<rect x="151.601" y="399.562" fill="#ECEDED" stroke="#000000" stroke-width="0.5" width="14.325" height="14.326"/>
+	<polyline fill="none" stroke="#FF0000" points="154.167,407.492 157.082,411.792 164.514,401.227 	"/>
+</g>
+<text transform="matrix(1 0 0 1 170.1943 435.5205)" font-family="'Courier'" font-size="12.6063">accessibility</text>
+<g>
+	<rect x="151.601" y="424.827" fill="#ECEDED" stroke="#000000" stroke-width="0.5" width="14.325" height="14.326"/>
+	<polyline fill="none" stroke="#FF0000" points="154.167,432.757 157.082,437.057 164.514,426.491 	"/>
+</g>
+</svg>
