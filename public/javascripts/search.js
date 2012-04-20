@@ -9,7 +9,7 @@ $(document).ready(function () {
             var from = $('#lift-from').val();
             var to = $('#lift-to').val();
             var date = $('#lift-date').val();
-            console.log('fire search with: ' + from + ' ,' + to + ' ,' + date);
+            console.log('search lifts: ' + from + ' ,' + to + ' ,' + date);
 
             now.searchLift(from, to, date);
         });
@@ -29,9 +29,7 @@ $(document).ready(function () {
         now.showSearchResult = function (lifts) {
             //reset
             $('#search-result').html('');
-            $.each(directions, function(index, direction) {
-                direction.setMap(null);
-            });
+            $.each(directions, function(index, direction) { direction.setMap(null) });
             directions = [];
 
             $('#search-result').append("<lu>");

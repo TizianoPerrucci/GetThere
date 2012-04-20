@@ -29,6 +29,7 @@ $(document).ready(function () {
     function configureDatepicker(elemId) {
         if ($(elemId).length > 0) {
             $(elemId).datepicker();
+            $(elemId).datepicker('setDate', new Date());
         }
     }
 
@@ -38,7 +39,10 @@ $(document).ready(function () {
             $(elemId).clockpick({
                 starthour : 0,
                 endhour : 23,
-                military : true
+                minutedivisions: 12,
+                military : true,
+                event: 'Focus',
+                layout: 'Horizontal'
             });
         }
     }
