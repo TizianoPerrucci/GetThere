@@ -1,14 +1,14 @@
 $(document).ready(function () {
 
-    configureMapAutocompletion('#lift-from', '#lift-from-coord');
-    configureMapAutocompletion('#lift-to', '#lift-to-coord');
+    configureMapAutocompletion('#lift-from');
+    configureMapAutocompletion('#lift-to');
 
     configureDatepicker('#lift-date');
     configureClockpick('#lift-time');
 
     //////////
 
-    function configureMapAutocompletion(elemId, coordId) {
+    function configureMapAutocompletion(elemId) {
         var options = {
             types:['(cities)']
         };
@@ -16,13 +16,14 @@ $(document).ready(function () {
         $(elemId).each(function (index) {
             var autocomplete = new google.maps.places.Autocomplete(this, options);
 
-            if ($(coordId).length > 0) {
-                google.maps.event.addListener(autocomplete, 'place_changed', function () {
-                    var place = autocomplete.getPlace();
-                    var location = place.geometry.location;
-                    $(coordId).val(location);
-                });
-            }
+            google.maps.event.addListener(autocomplete, 'place_changed', function () {
+                var lngElem = elemId + '-lng';
+                var latElem = elemId + '-lat';
+
+                var place = autocomplete.getPlace();
+                $(lngElem).val(place.geometry.location.lng());
+                $(latElem).val(place.geometry.location.lat());
+            });
         });
     }
 
@@ -41,7 +42,6 @@ $(document).ready(function () {
                 endhour : 23,
                 minutedivisions: 12,
                 military : true,
-                event: 'Focus',
                 layout: 'Horizontal'
             });
         }

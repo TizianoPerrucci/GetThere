@@ -37,7 +37,6 @@ module.exports = {
         app.get('/lifts/:id', function (req, res) {
             Lift.findById(req.params.id, function (err, lift) {
                 if (err) throw err;
-                console.log('Get lift: ' + lift);
                 res.render('./lifts/show', {lift:lift});
             });
         });
@@ -54,19 +53,23 @@ module.exports = {
         //Create lift
         app.post('/lifts', function (req, res) {
             var postData = req.body.lift;
+
             var lift = new Lift();
             lift.from = postData.from;
-            lift.from_coord = postData.from_coord;
+            lift.from_coord.lng = +postData.from_lng;
+            lift.from_coord.lat = +postData.from_lat;
             lift.to = postData.to;
-            lift.to_coord = postData.to_coord;
+            lift.to_coord.lng = +postData.to_lng;
+            lift.to_coord.lat = +postData.to_lat;
             lift.date = postData.date;
             lift.time = postData.time;
             lift.time_flexibility = postData.time_flexibility;
 
-            lift.promiseSave()( function () {
+            lift.save(function (err) {
+                if (err) throw err;
                 console.log('Lift created: ' + lift);
                 res.redirect('/lifts');
-            }).end();  // TODO it should throw error in case, test if it works!
+            });
         });
 
         //Update lift
@@ -76,14 +79,18 @@ module.exports = {
             var query = Lift.update({ _id:req.params.id},
                     { $set:{
                         from:postData.from,
-                        from_coord:postData.from_coord,
+                        'from_coord.lng': +postData.from_lng,
+                        'from_coord.lat': +postData.from_lat,
                         to:postData.to,
-                        to_coord:postData.to_coord,
+                        'to_coord.lng': +postData.to_lng,
+                        'to_coord.lat': +postData.to_lat,
                         date:postData.date,
                         time:postData.time,
                         time_flexibility:postData.time_flexibility
                     }}
             );
+
+            console.log("update query: " + query);
 
             query.run(function (err, val) {
                 if (err) throw err;

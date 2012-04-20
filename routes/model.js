@@ -8,15 +8,18 @@ function defineModel(mongoose, fn) {
      * Model: Lift
      */
     var Lift = new Schema({
-        '_id': ObjectId,
-        'from': { type:String, index:true },
-        'from_coord': String,
-        'to': String,
-        'to_coord': String,
-        'date': String,
-        'time': String,
-        'time_flexibility': String
+        _id: ObjectId,
+        from: String,
+        from_coord: {lng: Number, lat: Number},
+        to: String,
+        to_coord: {lng: Number, lat: Number},
+        date: String,
+        time: String,
+        time_flexibility: String
     });
+
+    Lift.index({from_coord: '2d'});
+    Lift.index({to_coord: '2d'});
 
     Lift.methods.promiseSave = function () {
         var d = deferred();
