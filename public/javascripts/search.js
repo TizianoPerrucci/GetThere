@@ -6,12 +6,14 @@ $(document).ready(function () {
         form.submit(function (event) {
             event.preventDefault();
 
-            var from = $('#lift-from').val();
-            var to = $('#lift-to').val();
+            var from_lng = $('#lift-from-lng').val();
+            var from_lat = $('#lift-from-lat').val();
+            var to_lng = $('#lift-to-lng').val();
+            var to_lat = $('#lift-to-lat').val();
             var date = $('#lift-date').val();
-            console.log('search lifts: ' + from + ' ,' + to + ' ,' + date);
+            console.log('search lifts: (' + from_lng + ',' + from_lat + '), (' + to_lng + ',' + to_lat + '), ' + date);
 
-            now.searchLift(from, to, date);
+            now.searchLift(from_lng, from_lat, to_lng, to_lat, date);
         });
 
         var bucchianico = new google.maps.LatLng(42.3058632, 14.182741999999962);
