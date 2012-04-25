@@ -1,13 +1,13 @@
 div
   label From:
-    input(id='lift-from', name='lift[from]', value=lift.from || '')
-    input(id='lift-from-lng', name='lift[from_lng]', value=lift.from_coord.lng, type='hidden')
-    input(id='lift-from-lat', name='lift[from_lat]', value=lift.from_coord.lat, type='hidden')
+    input(id='lift-from', name='lift[from]', value=lift.from.city || '')
+    input(id='lift-from-lng', name='lift[from_lng]', value=lift.from.coord.lng || '', type='hidden')
+    input(id='lift-from-lat', name='lift[from_lat]', value=lift.from.coord.lat || '', type='hidden')
 div
   label To:
-    input(id='lift-to', name='lift[to]', value=lift.to || '')
-    input(id='lift-to-lng', name='lift[to_lng]', value=lift.to_coord.lng, type='hidden')
-    input(id='lift-to-lat', name='lift[to_lat]', value=lift.to_coord.lat, type='hidden')
+    input(id='lift-to', name='lift[to]', value=lift.to.city || '')
+    input(id='lift-to-lng', name='lift[to_lng]', value=lift.to.coord.lng || '', type='hidden')
+    input(id='lift-to-lat', name='lift[to_lat]', value=lift.to.coord.lng || '', type='hidden')
 div
   label Date:
     input(id='lift-date', name='lift[date]', value=lift.date || '')

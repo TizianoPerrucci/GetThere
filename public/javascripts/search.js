@@ -11,9 +11,9 @@ $(document).ready(function () {
             var to_lng = $('#lift-to-lng').val();
             var to_lat = $('#lift-to-lat').val();
             var date = $('#lift-date').val();
-            console.log('search lifts: (' + from_lng + ',' + from_lat + '), (' + to_lng + ',' + to_lat + '), ' + date);
+            console.log('search lifts: (' + from_lat + ',' + from_lng + '), (' + to_lat + ',' + to_lng + '), ' + date);
 
-            now.searchLift(from_lng, from_lat, to_lng, to_lat, date);
+            now.searchLift(from_lat, from_lng, to_lat, to_lng, date);
         });
 
         var bucchianico = new google.maps.LatLng(42.3058632, 14.182741999999962);
@@ -36,12 +36,14 @@ $(document).ready(function () {
 
             $('#search-result').append("<lu>");
             $.each(lifts, function (index, lift) {
-                $('#search-result').append('<li>' + lift.from + ', ' + lift.to + ', ' + lift.date + ', ' +
+                $('#search-result').append('<li>' + lift.from.city + ', ' + lift.to.city + ', ' + lift.date + ', ' +
                         lift.time + ', ' + lift.time_flexibility + '</li>');
 
+                var o = new google.maps.LatLng(lift.from.coord.lat, lift.from.coord.lng);
+                var d = new google.maps.LatLng(lift.to.coord.lat, lift.to.coord.lng);
                 var request = {
-                    origin:lift.from_coord,
-                    destination:lift.to_coord,
+                    origin:o,
+                    destination:d,
                     travelMode:google.maps.TravelMode.DRIVING
                 };
 

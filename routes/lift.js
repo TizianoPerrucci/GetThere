@@ -1,164 +1,138 @@
-var mongoose = require('mongoose'),
-        liftModel = require('./model.js'),
-        deferred = require('deferred');
+module.exports = function(model, app) {
+    var Lift = model.lift();
+    var Origin = model.origin();
+    var Destination = model.destination();
 
+    app.get(('/'), function (req, res) {
+        res.redirect("/lifts");
+    });
 
-module.exports = {
-    initialize:function (app) {
-
-        liftModel.defineModel(mongoose, function () {
-            var dbUri = app.set('db-uri');
-            mongoose.connect(dbUri, function (err) {
-                if (err) throw err;
-                console.log('Mongo connected, uri: ' + dbUri);
-            });
+    app.get('/lifts', function (req, res) {
+        Lift.find({}).populate('from').populate('to').run(function (err, lifts) {
+            if (err) throw err;
+            console.log('Listing lifts: ' + lifts);
+            res.render('./lifts/list', {title:'All lifts', lifts:lifts, all:false});
         });
+    });
 
-        //make model public to all app
-        var Lift = app.Lift = mongoose.model('Lift');
 
-        app.get(('/'), function (req, res) {
-            res.redirect("/lifts");
+    function getTemplateLift() {
+        var lift = new Lift();
+        lift.from = new Origin();
+        lift.from.coord = { lat: 0, lng: 0 };
+        lift.to = new Destination();
+        lift.to.coord = { lat: 0, lng: 0 };
+        return lift;
+    }
+
+    app.get("/lifts/new", function (req, res) {
+        res.render('./lifts/new', {lift: getTemplateLift()});
+    });
+
+
+    // Get lift
+    app.get('/lifts/:id', function (req, res) {
+        Lift.findById(req.params.id).populate('from').populate('to').run(function (err, lift) {
+            if (err) throw err;
+            res.render('./lifts/show', {lift:lift});
         });
+    });
 
-        app.get('/lifts', function (req, res) {
-            Lift.find({}, function (err, lifts) {
-                if (err) throw err;
-                console.log('Listing lifts: ' + lifts);
-                res.render('./lifts/list', {title:'All lifts', lifts:lifts, all:false});
-            });
+    //Edit lift
+    app.get("/lifts/:id/edit", function (req, res) {
+        Lift.findById(req.params.id).populate('from').populate('to').run(function (err, lift) {
+            if (err) throw err;
+            res.render('./lifts/edit', {lift:lift});
         });
+    });
 
-        app.get("/lifts/new", function (req, res) {
-            res.render('./lifts/new', {lift:new Lift()});
+
+    //Create lift
+    app.post('/lifts', function (req, res) {
+        var postData = req.body.lift;
+
+        var lift = new Lift();
+        lift.date = postData.date;
+        lift.time = postData.time;
+        lift.time_flexibility = postData.time_flexibility;
+
+        var origin = new Origin();
+        origin.city = postData.from;
+        origin.coord.lng = +postData.from_lng;
+        origin.coord.lat = +postData.from_lat;
+
+        var dest = new Destination();
+        dest.city = postData.to;
+        dest.coord.lng = +postData.to_lng;
+        dest.coord.lat = +postData.to_lat;
+
+        lift.saveWith(origin, dest, function() {
+            res.redirect('/lifts');
         });
+    });
 
-        // Get lift
-        app.get('/lifts/:id', function (req, res) {
-            Lift.findById(req.params.id, function (err, lift) {
-                if (err) throw err;
-                res.render('./lifts/show', {lift:lift});
-            });
-        });
+    //Update lift
+    app.put('/lifts/:id', function (req, res) {
+        var postData = req.body.lift;
 
-        //Edit lift
-        app.get("/lifts/:id/edit", function (req, res) {
-            Lift.findById(req.params.id, function (err, lift) {
-                if (err) throw err;
-                res.render('./lifts/edit', {lift:lift});
-            });
-        });
+        Lift.findById(req.params.id).populate('from').populate('to').run(function (err, lift) {
+            if (err) throw err;
 
-
-        //Create lift
-        app.post('/lifts', function (req, res) {
-            var postData = req.body.lift;
-
-            var lift = new Lift();
-            lift.from = postData.from;
-            lift.from_coord.lng = +postData.from_lng;
-            lift.from_coord.lat = +postData.from_lat;
-            lift.to = postData.to;
-            lift.to_coord.lng = +postData.to_lng;
-            lift.to_coord.lat = +postData.to_lat;
             lift.date = postData.date;
             lift.time = postData.time;
             lift.time_flexibility = postData.time_flexibility;
 
-            lift.save(function (err) {
-                if (err) throw err;
-                console.log('Lift created: ' + lift);
+            var origin = new Origin();
+            origin.city = postData.from;
+            origin.coord.lng = +postData.from_lng;
+            origin.coord.lat = +postData.from_lat;
+
+            var dest = new Destination();
+            dest.city = postData.to;
+            dest.coord.lng = +postData.to_lng;
+            dest.coord.lat = +postData.to_lat;
+
+            lift.saveWith(origin, dest, function() {
                 res.redirect('/lifts');
             });
-        });
+        })
+    });
 
-        //Update lift
-        app.put('/lifts/:id', function (req, res) {
-            var postData = req.body.lift;
 
-            var query = Lift.update({ _id:req.params.id},
-                    { $set:{
-                        from:postData.from,
-                        'from_coord.lng': +postData.from_lng,
-                        'from_coord.lat': +postData.from_lat,
-                        to:postData.to,
-                        'to_coord.lng': +postData.to_lng,
-                        'to_coord.lat': +postData.to_lat,
-                        date:postData.date,
-                        time:postData.time,
-                        time_flexibility:postData.time_flexibility
-                    }}
-            );
+    //Delete lift
+    app.get('/lifts/:id/delete', function (req, res) {
+        Lift.findById(req.params.id).populate('from').populate('to').run(function (err, lift) {
+            if (err) throw err;
 
-            console.log("update query: " + query);
-
-            query.run(function (err, val) {
-                if (err) throw err;
-                console.log("lift updated: " + val);
+            lift.removeAll(function() {
                 res.redirect('/lifts');
-            });
-
-            /*
-             deferred.promisifyAsync(query.run, 2)(
-             function (val) {
-             console.log("result: " + val);
-             res.redirect('/lifts');
-             }).end();
-
-             Lift.promise(query)( function (mongoosePromise) {
-             console.log('Lift updated: ' + mongoosePromise);
-             console.log('Lift updated: ' + mongoosePromise.constructor);
-             console.log('Lift updated: ' + mongoosePromise.complete());
-             res.redirect('/lifts');
-             }).end();
-             */
-
+            })
         });
+    });
 
-        //Delete lift
-        app.get('/lifts/:id/delete', function (req, res) {
 
-            var query = Lift.remove({ _id:req.params.id });
+    //Search lift
+    app.get("/search", function (req, res) {
+        res.render('./lifts/search');
+    });
 
-            query.run(function (err, val) {
-                if (err) throw err;
-                console.log("lift removed: " + val);
-                res.redirect('/lifts');
-            });
+    app.post("/search", function (req, res) {
+        var from = req.body.lift.from;
+        var to = req.body.lift.to;
+        var date = req.body.lift.date;
 
-            /*
-             Lift.promise(query)(
-             function (mongoosePromise) {
-             console.log('lift deleted: ' + mongoosePromise);
-             res.redirect('/lifts');
-             }).end();
-             */
+        //start with and ignore case
+        Lift.find({
+            from:new RegExp('^' + from + '.*', 'i'),
+            to:new RegExp('^' + to + '.*', 'i'),
+            date:date
+        }, function (err, lifts) {
+            if (err) throw err;
+
+            console.log('Search lifts: ' + lifts);
+            res.render('./lifts/list', {title:'Lift from: \'' + from + '\'', lifts:lifts, all:true});
         });
+    });
 
 
-        //Search lift
-        app.get("/search", function (req, res) {
-            res.render('./lifts/search');
-        });
-
-        app.post("/search", function (req, res) {
-            var from = req.body.lift.from;
-            var to = req.body.lift.to;
-            var date = req.body.lift.date;
-
-            //start with and ignore case
-            Lift.find({
-                from:new RegExp('^' + from + '.*', 'i'),
-                to:new RegExp('^' + to + '.*', 'i'),
-                date:date
-            }, function (err, lifts) {
-                if (err) throw err;
-
-                console.log('Search lifts: ' + lifts);
-                res.render('./lifts/list', {title:'Lift from: \'' + from + '\'', lifts:lifts, all:true});
-            });
-        });
-
-
-    }
 };

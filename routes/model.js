@@ -1,45 +1,158 @@
-function defineModel(mongoose, fn) {
-    var deferred = require('deferred');
+var mongoose = require('mongoose');
 
-    var Schema = mongoose.Schema;
-    var ObjectId = Schema.ObjectId;
+module.exports = {
+    initialize: function(config) {
+        var dbUri = config.mongo.dbUri;
+        mongoose.connect(dbUri, function (err) {
+            if (err) throw err;
+            console.log('Mongo connected, uri: ' + dbUri);
+        });
 
-    /**
-     * Model: Lift
-     */
-    var Lift = new Schema({
-        _id: ObjectId,
-        from: String,
-        from_coord: {lng: Number, lat: Number},
-        to: String,
-        to_coord: {lng: Number, lat: Number},
-        date: String,
-        time: String,
-        time_flexibility: String
-    });
+        var Schema = mongoose.Schema;
+        var ObjectId = Schema.ObjectId;
 
-    Lift.index({from_coord: '2d'});
-    Lift.index({to_coord: '2d'});
+        /**
+         * MongoDB limit: can't have 2 special fields, code 13033
+         *
+         * You may only have 1 geospatial index per collection, for now.
+         * While MongoDB may allow to create multiple indexes, this behavior is unsupported.
+         * Because MongoDB can only use one index to support a single query, in most cases,
+         * having multiple geo indexes will produce undesirable behavior.
+         **/
+        var Lift = new Schema({
+            _id: ObjectId,
+            date: String,
+            time: String,
+            time_flexibility: String,
+            from: {type: ObjectId, ref: 'Origin'},
+            to: {type: ObjectId, ref: 'Destination'}
+        });
+        var Origin = new Schema({
+            //_lift: {type: ObjectId, ref: 'Lift'},
+            city: String,
+            coord: {lng: Number, lat: Number}
+        });
+        var Destination = new Schema({
+            //_lift: {type: ObjectId, ref: 'Lift'},
+            city: String,
+            coord: {lng: Number, lat: Number}
+        });
 
-    Lift.methods.promiseSave = function () {
-        var d = deferred();
-        d.resolve(this.save(arguments));
-        return d.promise;
-    };
+        Origin.index({coord:'2d'});
+        Destination.index({coord:'2d'});
 
-    Lift.statics.promise = function (query) {
-        //return deferred(query.run().addBack(function(r){this.apply(r)}));
+        /*
+        liftSchema.pre('save', function(next) {
+            var self = this;
+            var origin = self.from;
+            var dest = self.to;
+            origin.save(function (err) {
+                if (err) throw err;
 
-        var d = deferred();
-        d.resolve(query.run());
-        return d.promise;
-    };
+                dest.save(function (err) {
+                    if (err) throw err;
 
+                    self.from = origin;
+                    self.to = dest;
+                    self.save(function (err) {
+                        if (err) throw err;
+                        next();
+                    })
+                });
+            });
+        })
+        */
 
-    mongoose.model('Lift', Lift);
+        Lift.methods.saveWith = function(origin, dest, callback) {
+            //TODO remove previous origin dest
 
-    fn();
-}
+            //TODO some other issue while saving from UI
 
-exports.defineModel = defineModel;
+            var self = this;
+            origin.save(function (err) {
+                if (err) throw err;
 
+                dest.save(function (err) {
+                    if (err) throw err;
+
+                    self.from = origin;
+                    self.to = dest;
+                    self.save(function (err) {
+                        if (err) throw err;
+                        callback();
+                    })
+                });
+            });
+        };
+
+        Lift.methods.removeAll = function(callback) {
+            var self = this;
+            var origin = self.from;
+            var dest = self.to;
+            origin.remove(function(err){
+                if (err) throw err;
+
+                dest.remove(function(err){
+                    if (err) throw err;
+
+                    self.remove(function(err){
+                        if (err) throw err;
+
+                        callback();
+                    })
+                })
+            })
+        };
+
+        mongoose.model('Lift', Lift);
+        mongoose.model('Origin', Origin);
+        mongoose.model('Destination', Destination);
+    },
+
+    lift: function() {
+        return mongoose.model('Lift');
+    },
+
+    origin: function() {
+        return mongoose.model('Origin');
+    },
+
+    destination: function() {
+        return mongoose.model('Destination');
+    },
+
+    searchByDistance: function(from, to, distance, callback) {
+        console.log('search by distance: ', from , to);
+
+        //find origins and get list objectIds
+        //find destinations and get list objectIds
+        //search lifts that have valid origins and destinations
+        var Origin = this.origin();
+        var Destination = this.destination();
+        var Lift = this.lift();
+
+        Origin.find({'coord': { $near : from, $maxDistance: distance }}, function(err, origins) {
+            if (err) throw err;
+
+            console.log("Origins found: ", origins);
+
+            Destination.find({'coord': { $near : to, $maxDistance: distance }}, function(err, dests) {
+                if (err) throw err;
+
+                console.log("Dests found: ", dests);
+
+                Lift.find({'from': {$in: origins}, 'to': {$in: dests} })
+                        .populate('from')
+                        .populate('to')
+                        .run(function (err, lifts) {
+                            if (err) throw done(err);
+
+                            console.log("Finally we have found Lift: ", lifts);
+
+                            callback(lifts);
+                        })
+            })
+
+        })
+    }
+};
