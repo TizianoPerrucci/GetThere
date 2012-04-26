@@ -1,11 +1,6 @@
-/**
- * Module dependencies.
- */
-
 var express = require('express'),
         app = module.exports = express.createServer();
 
-// Configuration
 
 app.configure(function () {
     app.set('views', __dirname + '/views');
@@ -33,6 +28,7 @@ app.configure('production', function () {
     app.set('db-uri', 'mongodb://mongo:mongo00@ds031747.mongolab.com:31747/heroku_app3798339');
     app.use(express.errorHandler());
 });
+
 
 //TODO conf
 var config = require('./config/dev.js');

@@ -20,7 +20,6 @@ module.exports = {
          * having multiple geo indexes will produce undesirable behavior.
          **/
         var Lift = new Schema({
-            _id: ObjectId,
             date: String,
             time: String,
             time_flexibility: String,
@@ -64,7 +63,7 @@ module.exports = {
         */
 
         Lift.methods.saveWith = function(origin, dest, callback) {
-            //TODO remove previous origin dest
+            //TODO remove previous origin dest when updating
 
             //TODO some other issue while saving from UI
 
@@ -79,7 +78,7 @@ module.exports = {
                     self.to = dest;
                     self.save(function (err) {
                         if (err) throw err;
-                        callback();
+                        callback(self);
                     })
                 });
             });
@@ -134,12 +133,8 @@ module.exports = {
         Origin.find({'coord': { $near : from, $maxDistance: distance }}, function(err, origins) {
             if (err) throw err;
 
-            console.log("Origins found: ", origins);
-
             Destination.find({'coord': { $near : to, $maxDistance: distance }}, function(err, dests) {
                 if (err) throw err;
-
-                console.log("Dests found: ", dests);
 
                 Lift.find({'from': {$in: origins}, 'to': {$in: dests} })
                         .populate('from')
@@ -147,12 +142,10 @@ module.exports = {
                         .run(function (err, lifts) {
                             if (err) throw done(err);
 
-                            console.log("Finally we have found Lift: ", lifts);
-
                             callback(lifts);
                         })
             })
-
         })
     }
+    
 };
