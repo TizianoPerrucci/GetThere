@@ -21,7 +21,7 @@ describe('Lift model', function () {
         })
     })
 
-    function insertGenericLift(coord, callback) {
+    function insertAndLoad(coord, callback) {
         //dest.city = 'Rotterdam, The Netherlands';
         //dest.coord.lng = 4.481775999999968;
         //dest.coord.lat = 51.92421599999999;
@@ -58,7 +58,7 @@ describe('Lift model', function () {
 
     it('should save', function (done) {
         var coord = {f:'a', flng:1, flat:2, t:'b', tlng:1, tlat:2}
-        insertGenericLift(coord, function (lift) {
+        insertAndLoad(coord, function (lift) {
             console.log('Created lift: ', lift);
 
             lift.from.city.should.equal("a");
@@ -70,15 +70,18 @@ describe('Lift model', function () {
 
     it('should update', function (done) {
         var coord = {f:'a', flng:1, flat:2, t:'b', tlng:1, tlat:2}
-        insertGenericLift(coord, function (lift) {
-            lift.date = '01/01/2013';
+        insertAndLoad(coord, function (lift) {
+            var liftUpdate = lift;
+            liftUpdate.date =  '01/01/2013';
 
-            var origin = lift.from;
-            origin.city = 'Bucchianico, Italy';
-            origin.coord.lng = 14.182741999999962;
-            origin.coord.lat = 42.3058632;
+            var destUpdate = lift.to;
 
-            lift.saveWith(origin, lift.to, function () {
+            var originUpdate = lift.from;
+            originUpdate.city = 'Bucchianico, Italy';
+            originUpdate.coord.lng = 14.182741999999962;
+            originUpdate.coord.lat = 42.3058632;
+
+            liftUpdate.saveWith(originUpdate, destUpdate, function () {
                 Lift.findOne({})
                         .populate('from')
                         .populate('to')
@@ -98,7 +101,7 @@ describe('Lift model', function () {
 
     it('should remove', function (done) {
         var coord = {f:'a', flng:1, flat:2, t:'b', tlng:1, tlat:2}
-        insertGenericLift(coord, function (lift) {
+        insertAndLoad(coord, function (lift) {
             lift.removeAll(function () {
 
                 Lift.findOne({}, function (err, l) {
@@ -123,9 +126,9 @@ describe('Lift model', function () {
 
     it('should search by distance', function (done) {
         var coord1 = {f:'a', flat:6, flng:11, t:'b', tlat:36, tlng:46};
-        insertGenericLift(coord1, function (lift) {
+        insertAndLoad(coord1, function (lift) {
             var coord2 = {f:'c', flat:4, flng:9, t:'d', tlat:34, tlng:44};
-            insertGenericLift(coord2, function (lift) {
+            insertAndLoad(coord2, function (lift) {
 
                 //[lat, lng]
                 var nearFrom = [5, 10];

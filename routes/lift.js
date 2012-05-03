@@ -82,12 +82,12 @@ module.exports = function(model, app) {
             lift.time = postData.time;
             lift.time_flexibility = postData.time_flexibility;
 
-            var origin = new Origin();
+            var origin = lift.from;
             origin.city = postData.from;
             origin.coord.lng = +postData.from_lng;
             origin.coord.lat = +postData.from_lat;
 
-            var dest = new Destination();
+            var dest = lift.to;
             dest.city = postData.to;
             dest.coord.lng = +postData.to_lng;
             dest.coord.lat = +postData.to_lat;

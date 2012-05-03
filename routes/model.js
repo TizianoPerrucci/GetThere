@@ -63,10 +63,6 @@ module.exports = {
         */
 
         Lift.methods.saveWith = function(origin, dest, callback) {
-            //TODO remove previous origin dest when updating
-
-            //TODO some other issue while saving from UI
-
             var self = this;
             origin.save(function (err) {
                 if (err) throw err;
