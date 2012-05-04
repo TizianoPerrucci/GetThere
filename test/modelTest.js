@@ -1,11 +1,17 @@
+// Environment settings
+process.env.NODE_ENV = 'test';
+
 var should = require('should');
 
-var config = require('../config/test');
+var konphyg = require('konphyg')(__dirname + '/../config');
+var config = konphyg('conf');
+
+//TODO initialize only once
 var model = require('../routes/model');
+model.initialize(config);
 
 
 describe('Lift model', function () {
-    model.initialize(config);
 
     var Lift = model.lift();
     var Origin = model.origin();

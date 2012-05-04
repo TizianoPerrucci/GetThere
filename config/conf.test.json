@@ -1,0 +1,5 @@
+{
+    "mongo": {
+         "dbUri": "mongodb://localhost/lift-test"
+    }
+}

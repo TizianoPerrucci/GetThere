@@ -13,25 +13,23 @@ app.configure(function () {
 });
 
 app.configure('development', function () {
-    app.set('db-uri', 'mongodb://localhost/lift-dev');
     app.use(express.errorHandler({ dumpExceptions:true, showStack:true }));
 });
 
 app.configure('test', function () {
-    app.set('db-uri', 'mongodb://localhost/lift-test');
     app.set('view options', {
         pretty:true
     });
 });
 
 app.configure('production', function () {
-    app.set('db-uri', 'mongodb://mongo:mongo00@ds031747.mongolab.com:31747/heroku_app3798339');
     app.use(express.errorHandler());
 });
 
 
-//TODO conf
-var config = require('./config/dev.js');
+var konphyg = require('konphyg')(__dirname + '/config');
+var config = konphyg('conf');
+
 
 var model = require('./routes/model');
 model.initialize(config);
@@ -39,7 +37,8 @@ model.initialize(config);
 var view = require('./routes/lift')(model, app);
 
 
-app.listen(config.web.port, function () {
+var port = process.env.PORT || 8080;
+app.listen(port, function () {
     console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
 
