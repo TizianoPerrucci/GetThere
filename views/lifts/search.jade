@@ -1,32 +1,29 @@
 h2 Search Lift
 
-a(href='/lifts', title='New lift') Back to full list
-
-p
-
 script(src='/nowjs/now.js')
 
-form(id='search-lift', method='post', action='/search')
-  div
-    label From:
-      input(id='lift-from', name='lift[from]')
-      input(id='lift-from-lng', name='lift[from_lng]', type='hidden')
-      input(id='lift-from-lat', name='lift[from_lat]', type='hidden')
-  div
-    label To:
-      input(id='lift-to', name='lift[to]')
-      input(id='lift-to-lng', name='lift[to_lng]', type='hidden')
-      input(id='lift-to-lat', name='lift[to_lat]', type='hidden')
-  div
-    label Date:
-      input(id='lift-date', name='lift[date]')
-  div
-    input(type='submit', value='Search')
+div#search-form
+  a(href='/lifts', title='New lift') Back to full list
+  p
+  form(id='search-lift', method='post', action='/search')
+    div
+      label From:
+        input(id='lift-from', name='lift[from]')
+        input(id='lift-from-lng', name='lift[from_lng]', type='hidden')
+        input(id='lift-from-lat', name='lift[from_lat]', type='hidden')
+    div
+      label To:
+        input(id='lift-to', name='lift[to]')
+        input(id='lift-to-lng', name='lift[to_lng]', type='hidden')
+        input(id='lift-to-lat', name='lift[to_lat]', type='hidden')
+    div
+      label Date:
+        input(id='lift-date', name='lift[date]')
+    div
+      input(type='submit', value='Search')
+  p
 
-p
-
-div#search-result
-
-p
-
-div#map_canvas
+div#search-result-container
+  div#map-canvas
+  p
+  div#search-result

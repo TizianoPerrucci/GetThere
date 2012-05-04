@@ -30,6 +30,7 @@ $(document).ready(function () {
     function configureDatepicker(elemId) {
         if ($(elemId).length > 0) {
             $(elemId).datepicker();
+            $(elemId).datepicker( "option", "dateFormat", "dd/mm/yy" );
             $(elemId).datepicker('setDate', new Date());
         }
     }

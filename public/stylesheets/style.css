@@ -7,7 +7,21 @@ a {
     color: #00B7FF;
 }
 
-#map_canvas {
+#search-form {
+    float: left;
+    width: 300px;
+    margin: 0;
+    padding: 0;
+}
+
+#search-result-container {
+    float: left;
+    width: 500px;
+    margin: 0;
+    padding: 0;
+}
+
+#map-canvas {
     height: 300px;
     width: 400px;
     margin: 0;
