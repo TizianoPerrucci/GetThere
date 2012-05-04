@@ -1,0 +1,5 @@
+{
+    "mongo": {
+         "dbUri": "mongodb://mongo:mongo00@ds031747.mongolab.com:31747/heroku_app3798339"
+    }
+}
