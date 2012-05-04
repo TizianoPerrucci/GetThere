@@ -1,5 +1,3 @@
-h2 Search Lift
-
 script(src='/nowjs/now.js')
 
 div#search-form
@@ -8,22 +6,21 @@ div#search-form
   form(id='search-lift', method='post', action='/search')
     div
       label From:
-        input(id='lift-from', name='lift[from]')
-        input(id='lift-from-lng', name='lift[from_lng]', type='hidden')
-        input(id='lift-from-lat', name='lift[from_lat]', type='hidden')
+        input(id='search-from')
+        input(id='search-from-lng', type='hidden')
+        input(id='search-from-lat', type='hidden')
     div
       label To:
-        input(id='lift-to', name='lift[to]')
-        input(id='lift-to-lng', name='lift[to_lng]', type='hidden')
-        input(id='lift-to-lat', name='lift[to_lat]', type='hidden')
+        input(id='search-to', name='lift[to]')
+        input(id='search-to-lng', type='hidden')
+        input(id='search-to-lat', type='hidden')
     div
       label Date:
-        input(id='lift-date', name='lift[date]')
+        input(id='search-date', name='lift[date]')
     div
+      input(id='search-tolerance', type='hidden', value='5')
       input(type='submit', value='Search')
-  p
 
-div#search-result-container
-  div#map-canvas
-  p
-  div#search-result
+div#map-canvas
+
+div#search-result

@@ -1,10 +1,16 @@
 $(document).ready(function () {
 
     configureMapAutocompletion('#lift-from');
+    focusIfExist('#lift-from');
     configureMapAutocompletion('#lift-to');
-
     configureDatepicker('#lift-date');
     configureClockpick('#lift-time');
+
+    configureMapAutocompletion('#search-from');
+    focusIfExist('#search-from');
+    configureMapAutocompletion('#search-to');
+    configureDatepicker('#search-date');
+    configureClockpick('#search-time');
 
     //////////
 
@@ -48,4 +54,9 @@ $(document).ready(function () {
         }
     }
 
+    function focusIfExist(elemId) {
+        if ($(elemId).length > 0) {
+            $(elemId).focus();
+        }
+    }
 });

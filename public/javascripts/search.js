@@ -7,14 +7,13 @@ $(document).ready(function () {
         form.submit(function (event) {
             event.preventDefault();
 
-            //TODO pass tolerance parameter
-
-            var from_lat = parseFloat($('#lift-from-lat').val());
-            var from_lng = parseFloat($('#lift-from-lng').val());
-            var to_lat = parseFloat($('#lift-to-lat').val());
-            var to_lng = parseFloat($('#lift-to-lng').val());
-            var date = parseFloat($('#lift-date').val());
-            console.log('search lifts: (' + from_lat + ',' + from_lng + '), (' + to_lat + ',' + to_lng + '), ' + date);
+            var from_lat = parseFloat($('#search-from-lat').val());
+            var from_lng = parseFloat($('#search-from-lng').val());
+            var to_lat = parseFloat($('#search-to-lat').val());
+            var to_lng = parseFloat($('#search-to-lng').val());
+            var date = $('#search-date').val();
+            var tolerance = parseFloat($('#search-tolerance').val());
+            console.log('search lifts: (' + from_lat + ',' + from_lng + '), (' + to_lat + ',' + to_lng + '), ' + date + ', ' + tolerance);
 
             var southLat;
             var northLat;
@@ -35,12 +34,13 @@ $(document).ready(function () {
                 eastLng = from_lng;
             }
 
-            //TODO add tolerance to the boundaries
-            var southWest = new google.maps.LatLng(southLat, westLng);
-            var northEast = new google.maps.LatLng(northLat, eastLng);
+            var southWest = new google.maps.LatLng(southLat - tolerance, westLng - tolerance);
+            var northEast = new google.maps.LatLng(northLat + tolerance, eastLng + tolerance);
+            console.log('map bounds: ',southWest, northEast);
+
             map.fitBounds(new google.maps.LatLngBounds(southWest, northEast));
 
-            now.searchLift(from_lat, from_lng, to_lat, to_lng, date);
+            now.searchLift(from_lat, from_lng, to_lat, to_lng, date, tolerance);
         });
 
         var bucchianico = new google.maps.LatLng(42.3058632, 14.182741999999962);
@@ -49,8 +49,7 @@ $(document).ready(function () {
             mapTypeId:google.maps.MapTypeId.ROADMAP,
             center:bucchianico,
             disableDefaultUI:true,
-            zoomControl: true,
-            scaleControl: true
+            zoomControl: true
         };
         map = new google.maps.Map(document.getElementById("map-canvas"), opt);
 
@@ -101,7 +100,7 @@ $(document).ready(function () {
                 });
 
                 directionsService.route(request, function (result, status) {
-                    console.log("route status:" + status);
+                    //console.log("route status:" + status);
                     if (status === google.maps.DirectionsStatus.OK) {
                        directionsRenderer.setDirections(result);
                     }
