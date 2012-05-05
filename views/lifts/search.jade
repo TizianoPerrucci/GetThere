@@ -1,8 +1,6 @@
 script(src='/nowjs/now.js')
 
 div#search-form
-  a(href='/lifts', title='New lift') Back to full list
-  p
   form(id='search-lift', method='post', action='/search')
     div
       label From:
@@ -18,8 +16,10 @@ div#search-form
       label Date:
         input(id='search-date', name='lift[date]')
     div
-      input(id='search-tolerance', type='hidden', value='5')
+      input(id='search-tolerance', type='hidden')
       input(type='submit', value='Search')
+  p
+  a(href='/lifts', title='New lift') Back to full list
 
 div#map-canvas
 

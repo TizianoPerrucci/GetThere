@@ -29,3 +29,13 @@ a {
     margin: 10px;
     padding: 0;
 }
+
+#tolerance {
+    border: 0;
+    padding: 0;
+    color: #FF0000;
+    font-weight:bold;
+    width:200px;
+    text-align:center;
+    background-color: #aaaaaa;
+}

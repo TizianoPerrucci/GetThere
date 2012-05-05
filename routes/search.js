@@ -7,7 +7,8 @@ module.exports = function(app) {
 
     everyone.now.searchLift = function (from_lat, from_lng, to_lat, to_lng, date, tolerance) {
         var self = this;
-        console.log('received query - from: (' + from_lat + ',' + from_lng + '), (' + to_lat + ',' + to_lng + ') ,date: ' + date);
+
+        //TODO some validation
 
         //[lat, lng]
         model.searchByDistance([+from_lat, +from_lng], [+to_lat, +to_lng], tolerance, function(lifts) {

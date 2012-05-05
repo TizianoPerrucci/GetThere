@@ -102,7 +102,7 @@ module.exports = {
     },
 
     searchByDistance: function(from, to, distance, callback) {
-        console.log('search by distance: ', from , to);
+        console.log('search by distance: ', from , to, distance);
 
         //find origins and get list objectIds
         //find destinations and get list objectIds

@@ -4,6 +4,25 @@ $(document).ready(function () {
     var form = $('#search-lift');
     if (form.length > 0) {
 
+        var bucchianico = new google.maps.LatLng(42.3058632, 14.182741999999962);
+        var opt = {
+            zoom:4,
+            mapTypeId:google.maps.MapTypeId.ROADMAP,
+            center:bucchianico,
+            disableDefaultUI:true,
+            zoomControl: true
+        };
+        map = new google.maps.Map(document.getElementById("map-canvas"), opt);
+
+        //TODO default values??
+        configureToleranceControl(map, 250, 500);
+
+        var from, to;
+        var fromCircle, toCircle;
+        var directionsService = new google.maps.DirectionsService();
+        var directions = [];
+
+
         form.submit(function (event) {
             event.preventDefault();
 
@@ -15,56 +34,95 @@ $(document).ready(function () {
             var tolerance = parseFloat($('#search-tolerance').val());
             console.log('search lifts: (' + from_lat + ',' + from_lng + '), (' + to_lat + ',' + to_lng + '), ' + date + ', ' + tolerance);
 
-            var southLat;
-            var northLat;
-            if (from_lat < to_lat) {
-                southLat = from_lat;
-                northLat = to_lat;
-            } else {
-                southLat = to_lat;
-                northLat = from_lat;
-            }
-            var westLng;
-            var eastLng;
-            if (from_lng < to_lng) {
-                westLng = from_lng;
-                eastLng = to_lng;
-            } else {
-                westLng = to_lng;
-                eastLng = from_lng;
+            function isValidCoord(c) {
+                return c && c >= -180 && c <= 180;
             }
 
-            var southWest = new google.maps.LatLng(southLat - tolerance, westLng - tolerance);
-            var northEast = new google.maps.LatLng(northLat + tolerance, eastLng + tolerance);
-            console.log('map bounds: ',southWest, northEast);
+            var doSearch = false;
+            if (isValidCoord(from_lat) && isValidCoord(from_lng) && isValidCoord(to_lat) && isValidCoord(to_lng) &&
+                    date && date.length > 0 && tolerance && tolerance > 0) {
+                doSearch = true
+            } else {
+                alert("WARNING: Some inputs are not valid");
+            }
 
-            map.fitBounds(new google.maps.LatLngBounds(southWest, northEast));
+            if (doSearch) {
+                var southLat;
+                var northLat;
+                if (from_lat < to_lat) {
+                    southLat = from_lat;
+                    northLat = to_lat;
+                } else {
+                    southLat = to_lat;
+                    northLat = from_lat;
+                }
+                var westLng;
+                var eastLng;
+                if (from_lng < to_lng) {
+                    westLng = from_lng;
+                    eastLng = to_lng;
+                } else {
+                    westLng = to_lng;
+                    eastLng = from_lng;
+                }
 
-            now.searchLift(from_lat, from_lng, to_lat, to_lng, date, tolerance);
+                var southWest = new google.maps.LatLng(southLat - tolerance, westLng - tolerance);
+                var northEast = new google.maps.LatLng(northLat + tolerance, eastLng + tolerance);
+                console.log('map bounds: ', southWest, northEast);
+
+                //TODO not change it if not needed
+                map.fitBounds(new google.maps.LatLngBounds(southWest, northEast));
+
+                //reset search input
+                if (from) from.setMap(null);
+                if (fromCircle) fromCircle.setMap(null);
+                if (to) to.setMap(null);
+                if (toCircle) toCircle.setMap(null);
+
+                var fromPosition = new google.maps.LatLng(from_lat, from_lng);
+                var toPosition = new google.maps.LatLng(to_lat, to_lng);
+                var radius = fromDegreeToMeters(tolerance);
+
+                from = new google.maps.Marker({
+                    position: fromPosition,
+                    map: map,
+                    title: 'From'
+                });
+                fromCircle = new google.maps.Circle({
+                    center: fromPosition,
+                    clickable: false,
+                    fillColor: "#FF0000",
+                    fillOpacity: 0.35,
+                    map: map,
+                    radius: radius,
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2
+                });
+                to = new google.maps.Marker({
+                    position: toPosition,
+                    map: map,
+                    title: 'To'
+                });
+                toCircle = new google.maps.Circle({
+                    center: toPosition,
+                    clickable: false,
+                    fillColor: "#FF0000",
+                    fillOpacity: 0.35,
+                    map: map,
+                    radius: radius,
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2
+                });
+
+                now.searchLift(from_lat, from_lng, to_lat, to_lng, date, tolerance);
+            }
         });
 
-        var bucchianico = new google.maps.LatLng(42.3058632, 14.182741999999962);
-        var opt = {
-            zoom:4,
-            mapTypeId:google.maps.MapTypeId.ROADMAP,
-            center:bucchianico,
-            disableDefaultUI:true,
-            zoomControl: true
-        };
-        map = new google.maps.Map(document.getElementById("map-canvas"), opt);
-
-        //TODO create distance control as jquery slider
-        var homeControlDiv = document.createElement('div');
-        var homeControl = new HomeControl(homeControlDiv, map);
-        homeControlDiv.index = 1;
-        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);
-
-
-        var directionsService = new google.maps.DirectionsService();
-        var directions = [];
 
         now.showSearchResult = function (lifts) {
-            //reset
+            //reset search result
             $('#search-result').html('');
             $.each(directions, function(index, direction) { direction.setMap(null) });
             directions = [];
@@ -110,36 +168,45 @@ $(document).ready(function () {
 
         };
 
-        function HomeControl(controlDiv, map) {
-          // Set CSS styles for the DIV containing the control
-          // Setting padding to 5 px will offset the control
-          // from the edge of the map.
-          controlDiv.style.padding = '5px';
+        function configureToleranceControl(map, toleranceDefault, toleranceMax) {
+            var controlDiv = $('<div></div>').get(0);
+            controlDiv.index = 1;
+            controlDiv.style.padding = '5px';
 
-          // Set CSS for the control border.
-          var controlUI = document.createElement('div');
-          controlUI.style.backgroundColor = 'white';
-          controlUI.style.borderStyle = 'solid';
-          controlUI.style.borderWidth = '2px';
-          controlUI.style.cursor = 'pointer';
-          controlUI.style.textAlign = 'center';
-          controlUI.title = 'Click to set the map to Home';
-          controlDiv.appendChild(controlUI);
+            var slider = $('<div style="width: 200px"></div>');
+            slider.slider({
+                max:toleranceMax,
+                value:toleranceDefault,
+                slide: function( event, ui ) {
+                    $('#tolerance').val('Lifts at ' + ui.value + 'Km');
+                    $('#search-tolerance').val(fromKmToDegree(ui.value));
+                    form.submit();
+                }
+            });
+            controlDiv.appendChild(slider.get(0));
 
-          // Set CSS for the control interior.
-          var controlText = document.createElement('div');
-          controlText.style.fontFamily = 'Arial,sans-serif';
-          controlText.style.fontSize = '12px';
-          controlText.style.paddingLeft = '4px';
-          controlText.style.paddingRight = '4px';
-          controlText.innerHTML = '<strong>Home<strong>';
-          controlUI.appendChild(controlText);
+            var tolerance = $('<input type="text" id="tolerance" />');
+            tolerance.val('Lifts at ' + toleranceDefault + 'Km');
+            $('#search-tolerance').val(fromKmToDegree(toleranceDefault));
+            controlDiv.appendChild(tolerance.get(0));
 
-          // Setup the click event listeners: simply set the map to Chicago.
-          google.maps.event.addDomListener(controlUI, 'click', function() {
-            map.setCenter(bucchianico)
-          });
+            map.controls[google.maps.ControlPosition.TOP_CENTER].push(controlDiv);
         }
+
+        //TODO the world is not flat, use radians instead
+        /**
+         * The current implementation assumes an idealized model of a flat earth,
+         * meaning that an arcdegree of latitude (y) and longitude (x) represent the same distance everywhere.
+         * This is only true at the equator where they are both about equal to 69 miles or 111km.
+         */
+        function fromKmToDegree(km) {
+            return km / 111.128;
+        }
+
+        function fromDegreeToMeters(degree) {
+            return (degree * 111.128) * 1000;
+        }
+
 
         function random_color(format) {
             var rint = Math.round(0xffffff * Math.random());
