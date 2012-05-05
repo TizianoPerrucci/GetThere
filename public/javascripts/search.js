@@ -35,12 +35,12 @@ $(document).ready(function () {
             console.log('search lifts: (' + from_lat + ',' + from_lng + '), (' + to_lat + ',' + to_lng + '), ' + date + ', ' + tolerance);
 
             function isValidCoord(c) {
-                return c && c >= -180 && c <= 180;
+                return c >= -180 && c < 180;
             }
 
             var doSearch = false;
             if (isValidCoord(from_lat) && isValidCoord(from_lng) && isValidCoord(to_lat) && isValidCoord(to_lng) &&
-                    date && date.length > 0 && tolerance && tolerance > 0) {
+                    date && date.length > 0 && tolerance >= 0) {
                 doSearch = true
             } else {
                 alert("WARNING: Some inputs are not valid");
@@ -127,9 +127,10 @@ $(document).ready(function () {
             $.each(directions, function(index, direction) { direction.setMap(null) });
             directions = [];
 
+            //print and plot results
             $('#search-result').append("<lu>");
             $.each(lifts, function (index, lift) {
-                var liftDescription = lift.from.city + ',\n' + lift.to.city + ',\n' + lift.date + ', ' + lift.time + ', ' + lift.time_flexibility;
+                var liftDescription = lift.from.city + ', ' + lift.to.city + ', ' + lift.date + ', ' + lift.time + ', ' + lift.time_flexibility;
                 $('#search-result').append('<li>' + liftDescription + '</li>');
 
                 var o = new google.maps.LatLng(lift.from.coord.lat, lift.from.coord.lng);
@@ -144,17 +145,14 @@ $(document).ready(function () {
                 directions[index] = directionsRenderer;
                 directionsRenderer.setMap(map);
                 directionsRenderer.setOptions({
-                    preserveViewport:true,
-                    polylineOptions:{
-                        strokeColor:random_color('hex')
+                    preserveViewport: true,
+                    polylineOptions: {
+                        strokeColor: random_color('hex')
                     },
                     markerOptions: {
-                        title:liftDescription
+                        title: lift.from.city + ' - ' + lift.to.city
                     },
-                    //infoWindow: new google.maps.InfoWindow({
-                    //    content:'info info info'
-                    //})
-                    suppressInfoWindows:true
+                    suppressInfoWindows: true
                 });
 
                 directionsService.route(request, function (result, status) {
@@ -193,7 +191,7 @@ $(document).ready(function () {
             map.controls[google.maps.ControlPosition.TOP_CENTER].push(controlDiv);
         }
 
-        //TODO the world is not flat, use radians instead
+        //TODO the world is not flat, use radiant instead
         /**
          * The current implementation assumes an idealized model of a flat earth,
          * meaning that an arcdegree of latitude (y) and longitude (x) represent the same distance everywhere.
