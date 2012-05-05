@@ -18,12 +18,17 @@ module.exports = {
             var ObjectId = Schema.ObjectId;
 
             /**
-             * MongoDB limit: can't have 2 special fields, code 13033
+             * http://www.mongodb.org/display/DOCS/Geospatial+Indexing
+             *
+             * --> To make sure coordinate ordering is preserved from all languages use a 2 element array.
+             *
+             * --> MongoDB limit: can't have 2 special fields, code 13033
              *
              * You may only have 1 geospatial index per collection, for now.
              * While MongoDB may allow to create multiple indexes, this behavior is unsupported.
              * Because MongoDB can only use one index to support a single query, in most cases,
              * having multiple geo indexes will produce undesirable behavior.
+             *
              **/
             var Lift = new Schema({
                 date:String,
@@ -35,12 +40,12 @@ module.exports = {
             var Origin = new Schema({
                 //_lift: {type: ObjectId, ref: 'Lift'},
                 city:String,
-                coord:{lng:Number, lat:Number}
+                coord: [Number, Number] //use array to force mongoose to keep order [lng, lat]
             });
             var Destination = new Schema({
                 //_lift: {type: ObjectId, ref: 'Lift'},
                 city:String,
-                coord:{lng:Number, lat:Number}
+                coord: [Number, Number] //use array to force mongoose to keep order [lng, lat]
             });
 
             Origin.index({coord:'2d'});
@@ -101,8 +106,8 @@ module.exports = {
         return mongoose.model('Destination');
     },
 
-    searchByDistance: function(from, to, distance, callback) {
-        console.log('search by distance: ', from , to, distance);
+    searchByDistance: function(from, to, kmRange, callback) {
+        console.log('search by distance: ', from , to, kmRange);
 
         //find origins and get list objectIds
         //find destinations and get list objectIds
@@ -111,17 +116,25 @@ module.exports = {
         var Destination = this.destination();
         var Lift = this.lift();
 
-        Origin.find({'coord': { $near : from, $maxDistance: distance }}, function(err, origins) {
+        /**
+         * http://www.mongodb.org/display/DOCS/Geospatial+Indexing#GeospatialIndexing-TheEarthisRoundbutMapsareFlat
+         *
+         * Spherical distances can be used by adding "Sphere" to the name of the query
+         */
+        var earthRadius = 6371; // km
+        var range = kmRange / earthRadius; // to radians
+
+        Origin.find({'coord': { $nearSphere : from, $maxDistance: range }}, function(err, origins) {
             if (err) throw err;
 
-            Destination.find({'coord': { $near : to, $maxDistance: distance }}, function(err, dests) {
+            Destination.find({'coord': { $nearSphere : to, $maxDistance: range }}, function(err, dests) {
                 if (err) throw err;
 
                 Lift.find({'from': {$in: origins}, 'to': {$in: dests} })
                         .populate('from')
                         .populate('to')
                         .run(function (err, lifts) {
-                            if (err) throw done(err);
+                            if (err) throw err;
 
                             callback(lifts);
                         })

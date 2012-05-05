@@ -43,8 +43,8 @@ describe('Lift model', function () {
                 'lift[from_lng]':'1',
                 'lift[from_lat]':'2',
                 'lift[to]':'leipzig',
-                'lift[to_lng]':'1',
-                'lift[to_lat]':'2',
+                'lift[to_lng]':'8',
+                'lift[to_lat]':'9',
                 'lift[date]':'05/05/2012',
                 'lift[time]':'10:00',
                 'lift[time_flexibility]':'1h'

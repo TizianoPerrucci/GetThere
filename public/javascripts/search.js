@@ -15,7 +15,7 @@ $(document).ready(function () {
         map = new google.maps.Map(document.getElementById("map-canvas"), opt);
 
         //TODO default values??
-        configureToleranceControl(map, 250, 500);
+        configureToleranceControl(map, 10, 100);
 
         var from, to;
         var fromCircle, toCircle;
@@ -66,11 +66,10 @@ $(document).ready(function () {
                     eastLng = from_lng;
                 }
 
-                var southWest = new google.maps.LatLng(southLat - tolerance, westLng - tolerance);
-                var northEast = new google.maps.LatLng(northLat + tolerance, eastLng + tolerance);
+                var southWest = new google.maps.LatLng(southLat, westLng);
+                var northEast = new google.maps.LatLng(northLat, eastLng);
                 console.log('map bounds: ', southWest, northEast);
 
-                //TODO not change it if not needed
                 map.fitBounds(new google.maps.LatLngBounds(southWest, northEast));
 
                 //reset search input
@@ -81,7 +80,7 @@ $(document).ready(function () {
 
                 var fromPosition = new google.maps.LatLng(from_lat, from_lng);
                 var toPosition = new google.maps.LatLng(to_lat, to_lng);
-                var radius = fromDegreeToMeters(tolerance);
+                var radius = tolerance * 1000; //Google wants it in meters
 
                 from = new google.maps.Marker({
                     position: fromPosition,
@@ -133,8 +132,9 @@ $(document).ready(function () {
                 var liftDescription = lift.from.city + ', ' + lift.to.city + ', ' + lift.date + ', ' + lift.time + ', ' + lift.time_flexibility;
                 $('#search-result').append('<li>' + liftDescription + '</li>');
 
-                var o = new google.maps.LatLng(lift.from.coord.lat, lift.from.coord.lng);
-                var d = new google.maps.LatLng(lift.to.coord.lat, lift.to.coord.lng);
+                //Remember MongoDB uses a different order (lng,lat)
+                var o = new google.maps.LatLng(lift.from.coord[1], lift.from.coord[0]);
+                var d = new google.maps.LatLng(lift.to.coord[1], lift.to.coord[0]);
                 var request = {
                     origin:o,
                     destination:d,
@@ -146,9 +146,9 @@ $(document).ready(function () {
                 directionsRenderer.setMap(map);
                 directionsRenderer.setOptions({
                     preserveViewport: true,
-                    polylineOptions: {
-                        strokeColor: random_color('hex')
-                    },
+                    //polylineOptions: {
+                    //    strokeColor: random_color('hex')
+                    //},
                     markerOptions: {
                         title: lift.from.city + ' - ' + lift.to.city
                     },
@@ -177,7 +177,7 @@ $(document).ready(function () {
                 value:toleranceDefault,
                 slide: function( event, ui ) {
                     $('#tolerance').val('Lifts at ' + ui.value + 'Km');
-                    $('#search-tolerance').val(fromKmToDegree(ui.value));
+                    $('#search-tolerance').val(ui.value);
                     form.submit();
                 }
             });
@@ -185,26 +185,11 @@ $(document).ready(function () {
 
             var tolerance = $('<input type="text" id="tolerance" />');
             tolerance.val('Lifts at ' + toleranceDefault + 'Km');
-            $('#search-tolerance').val(fromKmToDegree(toleranceDefault));
+            $('#search-tolerance').val(toleranceDefault);
             controlDiv.appendChild(tolerance.get(0));
 
             map.controls[google.maps.ControlPosition.TOP_CENTER].push(controlDiv);
         }
-
-        //TODO the world is not flat, use radiant instead
-        /**
-         * The current implementation assumes an idealized model of a flat earth,
-         * meaning that an arcdegree of latitude (y) and longitude (x) represent the same distance everywhere.
-         * This is only true at the equator where they are both about equal to 69 miles or 111km.
-         */
-        function fromKmToDegree(km) {
-            return km / 111.128;
-        }
-
-        function fromDegreeToMeters(degree) {
-            return (degree * 111.128) * 1000;
-        }
-
 
         function random_color(format) {
             var rint = Math.round(0xffffff * Math.random());

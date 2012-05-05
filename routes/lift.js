@@ -19,9 +19,9 @@ module.exports = function(model, app) {
     function getTemplateLift() {
         var lift = new Lift();
         lift.from = new Origin();
-        lift.from.coord = { lat: 0, lng: 0 };
+        lift.from.coord = [0, 0];
         lift.to = new Destination();
-        lift.to.coord = { lat: 0, lng: 0 };
+        lift.to.coord = [0, 0];
         return lift;
     }
 
@@ -58,13 +58,11 @@ module.exports = function(model, app) {
 
         var origin = new Origin();
         origin.city = postData.from;
-        origin.coord.lng = +postData.from_lng;
-        origin.coord.lat = +postData.from_lat;
+        origin.coord = [+postData.from_lng, +postData.from_lat];
 
         var dest = new Destination();
         dest.city = postData.to;
-        dest.coord.lng = +postData.to_lng;
-        dest.coord.lat = +postData.to_lat;
+        dest.coord = [+postData.to_lng, +postData.to_lat];
 
         lift.saveWith(origin, dest, function() {
             res.redirect('/lifts');
@@ -84,13 +82,11 @@ module.exports = function(model, app) {
 
             var origin = lift.from;
             origin.city = postData.from;
-            origin.coord.lng = +postData.from_lng;
-            origin.coord.lat = +postData.from_lat;
+            origin.coord = [+postData.from_lng, +postData.from_lat];
 
             var dest = lift.to;
             dest.city = postData.to;
-            dest.coord.lng = +postData.to_lng;
-            dest.coord.lat = +postData.to_lat;
+            dest.coord = [+postData.to_lng, +postData.to_lat];
 
             lift.saveWith(origin, dest, function() {
                 res.redirect('/lifts');
@@ -110,29 +106,9 @@ module.exports = function(model, app) {
         });
     });
 
-
     //Search lift
     app.get("/search", function (req, res) {
         res.render('./lifts/search');
     });
-
-    app.post("/search", function (req, res) {
-        var from = req.body.lift.from;
-        var to = req.body.lift.to;
-        var date = req.body.lift.date;
-
-        //start with and ignore case
-        Lift.find({
-            from:new RegExp('^' + from + '.*', 'i'),
-            to:new RegExp('^' + to + '.*', 'i'),
-            date:date
-        }, function (err, lifts) {
-            if (err) throw err;
-
-            console.log('Search lifts: ' + lifts);
-            res.render('./lifts/list', {title:'Lift from: \'' + from + '\'', lifts:lifts, all:true});
-        });
-    });
-
 
 };
