@@ -126,43 +126,46 @@ $(document).ready(function () {
             directions = [];
 
             //print and plot results
-            $('#search-result').append("<lu>");
-            $.each(lifts, function (index, lift) {
-                var liftDescription = lift.from.city + ', ' + lift.to.city + ', ' + lift.date + ', ' + lift.time + ', ' + lift.time_flexibility;
-                $('#search-result').append('<li>' + liftDescription + '</li>');
+            if (lifts.length === 0) {
+                $('#search-result').append('No lifts found.');
+            } else {
+                $('#search-result').append('<lu>');
+                $.each(lifts, function (index, lift) {
+                    var liftDescription = lift.from.city + ', ' + lift.to.city + ', ' + lift.date + ', ' + lift.time + ', ' + lift.time_flexibility;
+                    $('#search-result').append('<li>' + liftDescription + '</li>');
 
-                //Remember MongoDB uses a different order (lng,lat)
-                var o = new google.maps.LatLng(lift.from.coord[1], lift.from.coord[0]);
-                var d = new google.maps.LatLng(lift.to.coord[1], lift.to.coord[0]);
-                var request = {
-                    origin:o,
-                    destination:d,
-                    travelMode:google.maps.TravelMode.DRIVING
-                };
+                    //Remember MongoDB uses a different order (lng,lat)
+                    var o = new google.maps.LatLng(lift.from.coord[1], lift.from.coord[0]);
+                    var d = new google.maps.LatLng(lift.to.coord[1], lift.to.coord[0]);
+                    var request = {
+                        origin:o,
+                        destination:d,
+                        travelMode:google.maps.TravelMode.DRIVING
+                    };
 
-                var directionsRenderer = new google.maps.DirectionsRenderer();
-                directions[index] = directionsRenderer;
-                directionsRenderer.setMap(map);
-                directionsRenderer.setOptions({
-                    preserveViewport: true,
-                    //polylineOptions: {
-                    //    strokeColor: random_color('hex')
-                    //},
-                    markerOptions: {
-                        title: lift.from.city + ' - ' + lift.to.city
-                    },
-                    suppressInfoWindows: true
+                    var directionsRenderer = new google.maps.DirectionsRenderer();
+                    directions[index] = directionsRenderer;
+                    directionsRenderer.setMap(map);
+                    directionsRenderer.setOptions({
+                        preserveViewport: true,
+                        //polylineOptions: {
+                        //    strokeColor: random_color('hex')
+                        //},
+                        markerOptions: {
+                            title: lift.from.city + ' - ' + lift.to.city
+                        },
+                        suppressInfoWindows: true
+                    });
+
+                    directionsService.route(request, function (result, status) {
+                        //console.log("route status:" + status);
+                        if (status === google.maps.DirectionsStatus.OK) {
+                            directionsRenderer.setDirections(result);
+                        }
+                    });
                 });
-
-                directionsService.route(request, function (result, status) {
-                    //console.log("route status:" + status);
-                    if (status === google.maps.DirectionsStatus.OK) {
-                       directionsRenderer.setDirections(result);
-                    }
-                });
-            });
-            $('#search-result').append("</lu>");
-
+                $('#search-result').append("</lu>");
+            }
         };
 
         function configureToleranceControl(map, toleranceDefault, toleranceMax) {
