@@ -30,10 +30,20 @@ a {
     padding: 0;
 }
 
-#tolerance {
+#text-from-tolerance {
     border: 0;
     padding: 0;
     color: #FF0000;
+    font-weight:bold;
+    width:200px;
+    text-align:center;
+    background-color: #aaaaaa;
+}
+
+#text-to-tolerance {
+    border: 0;
+    padding: 0;
+    color: #00f000;
     font-weight:bold;
     width:200px;
     text-align:center;

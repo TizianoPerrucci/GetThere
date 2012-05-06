@@ -106,8 +106,8 @@ module.exports = {
         return mongoose.model('Destination');
     },
 
-    searchByDistance: function(from, to, kmRange, callback) {
-        console.log('search by distance: ', from , to, kmRange);
+    searchByDistance: function(from, to, fromKmRange, toKmRange, callback) {
+        console.log('search by distance: ', from , to, fromKmRange, toKmRange);
 
         //find origins and get list objectIds
         //find destinations and get list objectIds
@@ -122,12 +122,13 @@ module.exports = {
          * Spherical distances can be used by adding "Sphere" to the name of the query
          */
         var earthRadius = 6371; // km
-        var range = kmRange / earthRadius; // to radians
+        var fromRange = fromKmRange / earthRadius; // to radians
+        var toRange = toKmRange / earthRadius; // to radians
 
-        Origin.find({'coord': { $nearSphere : from, $maxDistance: range }}, function(err, origins) {
+        Origin.find({'coord': { $nearSphere : from, $maxDistance: fromRange }}, function(err, origins) {
             if (err) throw err;
 
-            Destination.find({'coord': { $nearSphere : to, $maxDistance: range }}, function(err, dests) {
+            Destination.find({'coord': { $nearSphere : to, $maxDistance: toRange }}, function(err, dests) {
                 if (err) throw err;
 
                 Lift.find({'from': {$in: origins}, 'to': {$in: dests} })

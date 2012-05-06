@@ -30,8 +30,10 @@ $(document).ready(function () {
             var to_lat = parseFloat($('#search-to-lat').val());
             var to_lng = parseFloat($('#search-to-lng').val());
             var date = $('#search-date').val();
-            var tolerance = parseFloat($('#search-tolerance').val());
-            console.log('search lifts: (' + from_lat + ',' + from_lng + '), (' + to_lat + ',' + to_lng + '), ' + date + ', ' + tolerance);
+            var fromTolerance = parseFloat($('#search-from-tolerance').val());
+            var toTolerance = parseFloat($('#search-to-tolerance').val());
+            console.log('search lifts: (' + from_lat + ',' + from_lng + '), (' + to_lat + ',' + to_lng + '), ' + date +
+                    ', ' + fromTolerance + ', ' + toTolerance);
 
             function isValidCoord(c) {
                 return c >= -180 && c < 180;
@@ -39,7 +41,7 @@ $(document).ready(function () {
 
             var doSearch = false;
             if (isValidCoord(from_lat) && isValidCoord(from_lng) && isValidCoord(to_lat) && isValidCoord(to_lng) &&
-                    date && date.length > 0 && tolerance >= 0) {
+                    date && date.length > 0 && fromTolerance >= 0 && toTolerance >= 0) {
                 doSearch = true
             } else {
                 alert("WARNING: Some inputs are not valid");
@@ -79,7 +81,8 @@ $(document).ready(function () {
 
                 var fromPosition = new google.maps.LatLng(from_lat, from_lng);
                 var toPosition = new google.maps.LatLng(to_lat, to_lng);
-                var radius = tolerance * 1000; //Google wants it in meters
+                var fromRadius = fromTolerance * 1000; //Google wants it in meters
+                var toRadius = toTolerance * 1000; //Google wants it in meters
 
                 from = new google.maps.Marker({
                     position: fromPosition,
@@ -92,7 +95,7 @@ $(document).ready(function () {
                     fillColor: "#FF0000",
                     fillOpacity: 0.35,
                     map: map,
-                    radius: radius,
+                    radius: fromRadius,
                     strokeColor: "#FF0000",
                     strokeOpacity: 0.8,
                     strokeWeight: 2
@@ -105,16 +108,16 @@ $(document).ready(function () {
                 toCircle = new google.maps.Circle({
                     center: toPosition,
                     clickable: false,
-                    fillColor: "#FF0000",
+                    fillColor: "#00f000",
                     fillOpacity: 0.35,
                     map: map,
-                    radius: radius,
-                    strokeColor: "#FF0000",
+                    radius: toRadius,
+                    strokeColor: "#00f000",
                     strokeOpacity: 0.8,
                     strokeWeight: 2
                 });
 
-                now.searchLift(from_lat, from_lng, to_lat, to_lng, date, tolerance);
+                now.searchLift(from_lat, from_lng, to_lat, to_lng, date, fromTolerance, toTolerance);
             }
         });
 
@@ -169,28 +172,51 @@ $(document).ready(function () {
         };
 
         function configureToleranceControl(map, toleranceDefault, toleranceMax) {
-            var controlDiv = $('<div></div>').get(0);
-            controlDiv.index = 1;
-            controlDiv.style.padding = '5px';
+            var fromControl = $('<div></div>').get(0);
+            fromControl.index = 1;
+            fromControl.style.padding = '5px';
 
-            var slider = $('<div style="width: 200px"></div>');
-            slider.slider({
+            var fromSlider = $('<div style="width: 200px"></div>');
+            fromSlider.slider({
                 max:toleranceMax,
                 value:toleranceDefault,
                 slide: function( event, ui ) {
-                    $('#tolerance').val('Lifts at ' + ui.value + 'Km');
-                    $('#search-tolerance').val(ui.value);
+                    $('#text-from-tolerance').val('Departure around ' + ui.value + 'Km');
+                    $('#search-from-tolerance').val(ui.value);
                     form.submit();
                 }
             });
-            controlDiv.appendChild(slider.get(0));
+            fromControl.appendChild(fromSlider.get(0));
 
-            var tolerance = $('<input type="text" id="tolerance" />');
-            tolerance.val('Lifts at ' + toleranceDefault + 'Km');
-            $('#search-tolerance').val(toleranceDefault);
-            controlDiv.appendChild(tolerance.get(0));
+            var fromTolerance = $('<input type="text" id="text-from-tolerance" />');
+            fromTolerance.val('Departure around ' + toleranceDefault + 'Km');
+            $('#search-from-tolerance').val(toleranceDefault);
+            fromControl.appendChild(fromTolerance.get(0));
 
-            map.controls[google.maps.ControlPosition.TOP_CENTER].push(controlDiv);
+            map.controls[google.maps.ControlPosition.TOP_LEFT].push(fromControl);
+
+            var toControl = $('<div></div>').get(0);
+            toControl.index = 1;
+            toControl.style.padding = '5px';
+
+            var toSlider = $('<div style="width: 200px"></div>');
+            toSlider.slider({
+                max:toleranceMax,
+                value:toleranceDefault,
+                slide: function( event, ui ) {
+                    $('#text-to-tolerance').val('Arrival around ' + ui.value + 'Km');
+                    $('#search-to-tolerance').val(ui.value);
+                    form.submit();
+                }
+            });
+            toControl.appendChild(toSlider.get(0));
+
+            var toTolerance = $('<input type="text" id="text-to-tolerance" />');
+            toTolerance.val('Arrival around ' + toleranceDefault + 'Km');
+            $('#search-to-tolerance').val(toleranceDefault);
+            toControl.appendChild(toTolerance.get(0));
+
+            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(toControl);
         }
 
         function random_color(format) {
