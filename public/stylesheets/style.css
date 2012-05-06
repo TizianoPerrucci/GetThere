@@ -33,7 +33,7 @@ a {
 #text-from-tolerance {
     border: 0;
     padding: 0;
-    color: #FF0000;
+    color: #FFFF00;
     font-weight:bold;
     width:200px;
     text-align:center;
@@ -43,9 +43,13 @@ a {
 #text-to-tolerance {
     border: 0;
     padding: 0;
-    color: #00f000;
+    color: #00F000;
     font-weight:bold;
     width:200px;
     text-align:center;
     background-color: #aaaaaa;
+}
+
+li:hover {
+    color:red;
 }

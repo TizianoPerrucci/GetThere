@@ -21,7 +21,6 @@ $(document).ready(function () {
         var directionsService = new google.maps.DirectionsService();
         var directions = [];
 
-
         form.submit(function (event) {
             event.preventDefault();
 
@@ -92,11 +91,11 @@ $(document).ready(function () {
                 fromCircle = new google.maps.Circle({
                     center: fromPosition,
                     clickable: false,
-                    fillColor: "#FF0000",
+                    fillColor: "#FFFF00",
                     fillOpacity: 0.35,
                     map: map,
                     radius: fromRadius,
-                    strokeColor: "#FF0000",
+                    strokeColor: "#FFFF00",
                     strokeOpacity: 0.8,
                     strokeWeight: 2
                 });
@@ -108,11 +107,11 @@ $(document).ready(function () {
                 toCircle = new google.maps.Circle({
                     center: toPosition,
                     clickable: false,
-                    fillColor: "#00f000",
+                    fillColor: "#00F000",
                     fillOpacity: 0.35,
                     map: map,
                     radius: toRadius,
-                    strokeColor: "#00f000",
+                    strokeColor: "#00F000",
                     strokeOpacity: 0.8,
                     strokeWeight: 2
                 });
@@ -135,9 +134,32 @@ $(document).ready(function () {
                 $('#search-result').append('<lu>');
                 $.each(lifts, function (index, lift) {
                     var liftDescription = lift.from.city + ', ' + lift.to.city + ', ' + lift.date + ', ' + lift.time + ', ' + lift.time_flexibility;
-                    $('#search-result').append('<li>' + liftDescription + '</li>');
+                    var li = $('<li></li>');
+                    li.text(liftDescription);
+                    li.hover(
+                            function() {
+                                var direction = directions[index];
+                                direction.setOptions({
+                                    polylineOptions: {
+                                        strokeColor: 'red'
+                                    }
+                                })
+                                direction.setDirections(direction.getDirections());
+                            },
+                            function(){
+                                var direction = directions[index];
+                                direction.setOptions({
+                                    polylineOptions: {
+                                        strokeColor: 'blue'
+                                    }
+                                })
+                                direction.setDirections(direction.getDirections());
+                            }
+                    );
+                    $('#search-result').append(li);
 
-                    //Remember MongoDB uses a different order (lng,lat)
+                    //Remember:
+                    // MongoDB uses a different order (lng,lat)
                     var o = new google.maps.LatLng(lift.from.coord[1], lift.from.coord[0]);
                     var d = new google.maps.LatLng(lift.to.coord[1], lift.to.coord[0]);
                     var request = {
@@ -151,18 +173,23 @@ $(document).ready(function () {
                     directionsRenderer.setMap(map);
                     directionsRenderer.setOptions({
                         preserveViewport: true,
-                        //polylineOptions: {
-                        //    strokeColor: random_color('hex')
-                        //},
-                        markerOptions: {
-                            title: lift.from.city + ' - ' + lift.to.city
+                        polylineOptions: {
+                            strokeColor: 'blue'
                         },
-                        suppressInfoWindows: true
+                        markerOptions: {
+                            flat: true
+                            //title: lift.from.city + ' - ' + lift.to.city
+                        }
                     });
 
                     directionsService.route(request, function (result, status) {
-                        //console.log("route status:" + status);
                         if (status === google.maps.DirectionsStatus.OK) {
+                            console.log('route: ' + result);
+                            //Hack:
+                            // set text infowindow of markers
+                            result.routes[0].legs[0].start_address = lift.from.city;
+                            result.routes[0].legs[0].end_address = lift.to.city;
+
                             directionsRenderer.setDirections(result);
                         }
                     });
@@ -217,21 +244,6 @@ $(document).ready(function () {
             toControl.appendChild(toTolerance.get(0));
 
             map.controls[google.maps.ControlPosition.TOP_RIGHT].push(toControl);
-        }
-
-        function random_color(format) {
-            var rint = Math.round(0xffffff * Math.random());
-            switch(format) {
-                case 'hex':
-                    return ('#0' + rint.toString(16)).replace(/^#0([0-9a-f]{6})$/i, '#$1');
-                    break;
-                case 'rgb':
-                    return 'rgb(' + (rint >> 16) + ',' + (rint >> 8 & 255) + ',' + (rint & 255) + ')';
-                    break;
-                default:
-                    return rint;
-                    break;
-            }
         }
     }
 
