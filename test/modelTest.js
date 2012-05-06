@@ -20,9 +20,7 @@ describe('Lift model', function () {
     beforeEach(function (done) {
         Origin.remove({}, function () {
             Destination.remove({}, function () {
-                Lift.remove({}, function () {
-                    done();
-                })
+                Lift.remove({}, done)
             })
         })
     })
@@ -62,6 +60,7 @@ describe('Lift model', function () {
             lift.time.should.equal('10:00');
             lift.time_flexibility.should.equal('1h');
             lift.from.city.should.equal("a");
+            //requires strict order (lng,lat)
             lift.from.coord[0].should.equal(1);
             lift.from.coord[1].should.equal(2);
             lift.to.city.should.equal("b");
@@ -97,6 +96,7 @@ describe('Lift model', function () {
                             res.time.should.equal('10:00');
                             res.time_flexibility.should.equal('1h');
                             res.from.city.should.equal("Bucchianico, Italy");
+                            //requires strict order (lng,lat)
                             res.from.coord[0].should.equal(6);
                             res.from.coord[1].should.equal(7);
                             res.to.city.should.equal("b");

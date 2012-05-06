@@ -15,7 +15,7 @@ var config = konphyg('conf');
 var model = require('../routes/model');
 model.initialize(config);
 
-describe('Lift model', function () {
+describe('Lift view', function () {
 
     var Lift = model.lift();
     var Origin = model.origin();
@@ -24,9 +24,7 @@ describe('Lift model', function () {
     beforeEach(function (done) {
         Origin.remove({}, function() {
             Destination.remove({}, function() {
-                Lift.remove({}, function() {
-                    done();
-                })
+                Lift.remove({}, done)
             })
         })
     })

@@ -9,8 +9,7 @@ $(document).ready(function () {
             zoom:4,
             mapTypeId:google.maps.MapTypeId.ROADMAP,
             center:bucchianico,
-            disableDefaultUI:true,
-            zoomControl: true
+            disableDefaultUI:true
         };
         map = new google.maps.Map(document.getElementById("map-canvas"), opt);
 
