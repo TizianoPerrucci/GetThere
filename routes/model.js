@@ -1,6 +1,7 @@
 var initialized = false;
 
 var mongoose = require('mongoose');
+var moment = require('moment');
 
 module.exports = {
     initialize: function(config) {
@@ -31,25 +32,24 @@ module.exports = {
              *
              **/
             var Lift = new Schema({
-                date:String,
-                time:String,
-                time_flexibility:String,
-                from:{type:ObjectId, ref:'Origin'},
-                to:{type:ObjectId, ref:'Destination'}
+                date: {type: Date, index: true},
+                time_flexibility: String,
+                from: {type:ObjectId, ref:'Origin'},
+                to: {type:ObjectId, ref:'Destination'}
             });
             var Origin = new Schema({
                 //_lift: {type: ObjectId, ref: 'Lift'},
-                city:String,
+                city: String,
                 coord: [Number, Number] //use array to force mongoose to keep order [lng, lat]
             });
             var Destination = new Schema({
                 //_lift: {type: ObjectId, ref: 'Lift'},
-                city:String,
+                city: String,
                 coord: [Number, Number] //use array to force mongoose to keep order [lng, lat]
             });
 
-            Origin.index({coord:'2d'});
-            Destination.index({coord:'2d'});
+            Origin.index({coord: '2d'});
+            Destination.index({coord: '2d'});
 
             Lift.methods.saveWith = function (origin, dest, callback) {
                 var self = this;
@@ -106,8 +106,8 @@ module.exports = {
         return mongoose.model('Destination');
     },
 
-    searchByDistance: function(from, to, fromKmRange, toKmRange, callback) {
-        console.log('search by distance: ', from , to, fromKmRange, toKmRange);
+    searchByDistanceAndDate: function(from, fromKmRange, to, toKmRange, date, dayRange, callback) {
+        console.log('search by distance: ', from , fromKmRange, to, toKmRange, date, dayRange);
 
         //find origins and get list objectIds
         //find destinations and get list objectIds
@@ -131,7 +131,12 @@ module.exports = {
             Destination.find({'coord': { $nearSphere : to, $maxDistance: toRange }}, function(err, dests) {
                 if (err) throw err;
 
-                Lift.find({'from': {$in: origins}, 'to': {$in: dests} })
+                var lowerBoundDate = moment(date.valueOf()).subtract('days', dayRange).toDate();
+                var upperBoundDate = moment(date.valueOf()).add('days', dayRange).toDate();
+                console.log(lowerBoundDate, upperBoundDate);
+
+                //includes date boundaries
+                Lift.find({'from': {$in: origins}, 'to': {$in: dests}, 'date': {$gte: lowerBoundDate, $lte: upperBoundDate} })
                         .populate('from')
                         .populate('to')
                         .run(function (err, lifts) {

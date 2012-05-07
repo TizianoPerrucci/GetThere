@@ -2,6 +2,7 @@
 process.env.NODE_ENV = 'test';
 
 var should = require('should');
+var moment = require('moment');
 
 var konphyg = require('konphyg')(__dirname + '/../config');
 var config = konphyg('conf');
@@ -25,19 +26,18 @@ describe('Lift model', function () {
         })
     })
 
-    function insertAndLoad(coord, callback) {
+    function insertAndLoad(info, callback) {
         var lift = new Lift();
-        lift.date = '05/05/2012';
-        lift.time = '10:00';
+        lift.date = info.d;
         lift.time_flexibility = '1h';
 
         var origin = new Origin();
-        origin.city = coord.f;
-        origin.coord = [coord.flng, coord.flat];
+        origin.city = info.f;
+        origin.coord = [info.flng, info.flat];
 
         var dest = new Destination();
-        dest.city = coord.t;
-        dest.coord = [coord.tlng, coord.tlat];
+        dest.city = info.t;
+        dest.coord = [info.tlng, info.tlat];
 
         lift.saveWith(origin, dest, function (l) {
             Lift.findById(lift._id)
@@ -52,12 +52,12 @@ describe('Lift model', function () {
     }
 
     it('should save', function (done) {
-        var coord = {f:'a', flng:1, flat:2, t:'b', tlng:8, tlat:9};
-        insertAndLoad(coord, function (lift) {
+        var date = moment('5-5-2012 10:00', 'MM-DD-YYYY HH:mm').toDate();
+        var info = {f:'a', flng:1, flat:2, t:'b', tlng:8, tlat:9, d: date};
+        insertAndLoad(info, function (lift) {
             console.log('Created lift: ', lift);
 
-            lift.date.should.equal('05/05/2012');
-            lift.time.should.equal('10:00');
+            lift.date.should.equal(date.valueOf());
             lift.time_flexibility.should.equal('1h');
             lift.from.city.should.equal("a");
             //requires strict order (lng,lat)
@@ -72,10 +72,12 @@ describe('Lift model', function () {
     })
 
     it('should update', function (done) {
-        var coord = {f:'a', flng:1, flat:2, t:'b', tlng:8, tlat:9};
+        var date = moment('5-5-2012 10:00', 'MM-DD-YYYY HH:mm').toDate();
+        var coord = {f:'a', flng:1, flat:2, t:'b', tlng:8, tlat:9, d: date};
         insertAndLoad(coord, function (lift) {
             var liftUpdate = lift;
-            liftUpdate.date =  '01/01/2013';
+            var newDate = moment('10-10-2019 11:33', 'MM-DD-YYYY HH:mm').toDate();
+            liftUpdate.date = newDate;
 
             var destUpdate = lift.to;
 
@@ -92,8 +94,7 @@ describe('Lift model', function () {
 
                             console.log('Updated lift: ', res);
 
-                            res.date.should.equal('01/01/2013');
-                            res.time.should.equal('10:00');
+                            res.date.should.equal(newDate.valueOf());
                             res.time_flexibility.should.equal('1h');
                             res.from.city.should.equal("Bucchianico, Italy");
                             //requires strict order (lng,lat)
@@ -110,7 +111,8 @@ describe('Lift model', function () {
     })
 
     it('should remove', function (done) {
-        var coord = {f:'a', flng:1, flat:2, t:'b', tlng:8, tlat:9};
+        var date = moment('5-5-2012 10:00', 'MM-DD-YYYY HH:mm').toDate();
+        var coord = {f:'a', flng:1, flat:2, t:'b', tlng:8, tlat:9, d: date};
         insertAndLoad(coord, function (lift) {
             lift.removeAll(function () {
 
@@ -134,17 +136,21 @@ describe('Lift model', function () {
         })
     })
 
-    it('should search by distance', function (done) {
-        var coord1 = {f:'from1', flng:14.18, flat:42.30, t:'to1', tlng:11.57, tlat:48.12};
+    it('should search by distance and date', function (done) {
+        var date1 = moment('5-4-2012 10:00', 'MM-DD-YYYY HH:mm').toDate();
+        var coord1 = {f:'from1', flng:14.18, flat:42.30, t:'to1', tlng:11.57, tlat:48.12, d: date1};
         insertAndLoad(coord1, function (lift) {
-            var coord2 = {f:'from2', flng:14.4, flat:42.9, t:'to2', tlng:11.8, tlat:48.45};
+            var date2 = moment('5-6-2012 10:00', 'MM-DD-YYYY HH:mm').toDate();
+            var coord2 = {f:'from2', flng:14.4, flat:42.9, t:'to2', tlng:11.8, tlat:48.45, d: date2};
             insertAndLoad(coord2, function (lift) {
 
                 //[lat, lng]
                 var nearFrom = [14.2, 42.68];
                 var nearTo = [11.77, 48.33];
-                //distance 45km
-                model.searchByDistance(nearFrom, nearTo, 45, function (lifts) {
+                var distance = 45; //km
+                var date = moment('5-5-2012 10:00', 'MM-DD-YYYY HH:mm').toDate();
+                var dayRange = 1;
+                model.searchByDistanceAndDate(nearFrom, distance, nearTo, distance, date, dayRange, function (lifts) {
                     lifts.should.have.length(2);
 
                     done();
@@ -152,7 +158,6 @@ describe('Lift model', function () {
 
             })
         })
-
     })
 
 })

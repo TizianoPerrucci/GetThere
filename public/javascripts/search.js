@@ -184,9 +184,9 @@ $(document).ready(function () {
 
                     directionsService.route(request, function (result, status) {
                         if (status === google.maps.DirectionsStatus.OK) {
-                            console.log('route: ' + result);
+                            console.log('route: ', result);
                             //Hack:
-                            // set text infowindow of markers
+                            // set infowindow content for the A-B markers
                             result.routes[0].legs[0].start_address = lift.from.city;
                             result.routes[0].legs[0].end_address = lift.to.city;
 
