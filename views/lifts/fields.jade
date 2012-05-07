@@ -10,10 +10,10 @@ div
     input(id='lift-to-lat', name='lift[to_lat]', value=lift.to.coord.lng || '', type='hidden')
 div
   label Date:
-    input(id='lift-date', name='lift[date]', value=lift.date || '')
+    input(id='lift-date', name='lift[date]', value=moment(lift.date).format('DD/MM/YYYY') || '')
 div
   label Time:
-    input(id='lift-time', name='lift[time]', value=lift.time || '')
+    input(id='lift-time', name='lift[time]', value=moment(lift.date).format('HH:mm') || '')
 div
   label Time flexibility:
     input(name='lift[time_flexibility]', value=lift.time_flexibility || '')

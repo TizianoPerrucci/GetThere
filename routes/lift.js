@@ -1,3 +1,5 @@
+var moment = require('moment');
+
 module.exports = function(model, app) {
     var Lift = model.lift();
     var Origin = model.origin();
@@ -11,13 +13,14 @@ module.exports = function(model, app) {
         Lift.find({}).populate('from').populate('to').run(function (err, lifts) {
             if (err) throw err;
             console.log('Listing lifts: ' + lifts);
-            res.render('./lifts/list', {title:'All lifts', lifts:lifts, all:false});
+            res.render('./lifts/list', {title:'All lifts', lifts:lifts, moment:moment});
         });
     });
 
 
     function getTemplateLift() {
         var lift = new Lift();
+        lift.date = new Date();
         lift.from = new Origin();
         lift.from.coord = [0, 0];
         lift.to = new Destination();
@@ -26,7 +29,7 @@ module.exports = function(model, app) {
     }
 
     app.get("/lifts/new", function (req, res) {
-        res.render('./lifts/new', {lift: getTemplateLift()});
+        res.render('./lifts/new', {lift: getTemplateLift(), moment:moment});
     });
 
 
@@ -34,7 +37,7 @@ module.exports = function(model, app) {
     app.get('/lifts/:id', function (req, res) {
         Lift.findById(req.params.id).populate('from').populate('to').run(function (err, lift) {
             if (err) throw err;
-            res.render('./lifts/show', {lift:lift});
+            res.render('./lifts/show', {lift:lift, moment:moment});
         });
     });
 
@@ -42,7 +45,8 @@ module.exports = function(model, app) {
     app.get("/lifts/:id/edit", function (req, res) {
         Lift.findById(req.params.id).populate('from').populate('to').run(function (err, lift) {
             if (err) throw err;
-            res.render('./lifts/edit', {lift:lift});
+
+            res.render('./lifts/edit', {lift:lift, moment:moment});
         });
     });
 
@@ -52,8 +56,8 @@ module.exports = function(model, app) {
         var postData = req.body.lift;
 
         var lift = new Lift();
-        lift.date = postData.date;
-        lift.time = postData.time;
+        var postedDate = moment(postData.date + ' ' + postData.time, 'DD/MM/YYYY HH:mm').toDate();
+        lift.date = postedDate;
         lift.time_flexibility = postData.time_flexibility;
 
         var origin = new Origin();
@@ -76,8 +80,8 @@ module.exports = function(model, app) {
         Lift.findById(req.params.id).populate('from').populate('to').run(function (err, lift) {
             if (err) throw err;
 
-            lift.date = postData.date;
-            lift.time = postData.time;
+            var postedDate = moment(postData.date + ' ' + postData.time, 'DD/MM/YYYY HH:mm').toDate();
+            lift.date = postedDate;
             lift.time_flexibility = postData.time_flexibility;
 
             var origin = lift.from;

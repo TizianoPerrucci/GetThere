@@ -3,8 +3,7 @@ h2 Show Lift
 ul
   li= lift.from
   li= lift.to
-  li= lift.date
-  li= lift.time
+  li= moment(lift.date).format('DD/MM/YYYY HH:mm')
   li= lift.time_flexibility
 
 a(href='/lifts', title='All lifts') All

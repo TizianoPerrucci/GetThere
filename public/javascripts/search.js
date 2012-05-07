@@ -28,11 +28,11 @@ $(document).ready(function () {
             var from_lng = parseFloat($('#search-from-lng').val());
             var to_lat = parseFloat($('#search-to-lat').val());
             var to_lng = parseFloat($('#search-to-lng').val());
-            var date = $('#search-date').val();
             var fromTolerance = parseFloat($('#search-from-tolerance').val());
             var toTolerance = parseFloat($('#search-to-tolerance').val());
-            console.log('search lifts: (' + from_lat + ',' + from_lng + '), (' + to_lat + ',' + to_lng + '), ' + date +
-                    ', ' + fromTolerance + ', ' + toTolerance);
+            var date = $('#search-date').datepicker('getDate');
+            console.log('search lifts: (' + from_lat + ',' + from_lng + '), ' + fromTolerance + ', (' + to_lat + ',' + to_lng + '), ' +
+                    toTolerance + ', ' + date);
 
             function isValidCoord(c) {
                 return c >= -180 && c < 180;
@@ -40,7 +40,7 @@ $(document).ready(function () {
 
             var doSearch = false;
             if (isValidCoord(from_lat) && isValidCoord(from_lng) && isValidCoord(to_lat) && isValidCoord(to_lng) &&
-                    date && date.length > 0 && fromTolerance >= 0 && toTolerance >= 0) {
+                    fromTolerance >= 0 && toTolerance >= 0 && date) {
                 doSearch = true
             } else {
                 alert("WARNING: Some inputs are not valid");
@@ -116,7 +116,9 @@ $(document).ready(function () {
                     strokeWeight: 2
                 });
 
-                now.searchLift(from_lat, from_lng, to_lat, to_lng, date, fromTolerance, toTolerance);
+                //TODO dayRange with control
+                var dayRange = 1;
+                now.searchLift(from_lat, from_lng, fromTolerance, to_lat, to_lng, toTolerance, date, dayRange);
             }
         });
 
@@ -133,7 +135,7 @@ $(document).ready(function () {
             } else {
                 $('#search-result').append('<lu>');
                 $.each(lifts, function (index, lift) {
-                    var liftDescription = lift.from.city + ', ' + lift.to.city + ', ' + lift.date + ', ' + lift.time + ', ' + lift.time_flexibility;
+                    var liftDescription = lift.from.city + ', ' + lift.to.city + ', ' + moment(lift.date).format('DD/MM/YYYY HH:mm') + ', ' + lift.time_flexibility;
                     var li = $('<li></li>');
                     li.text(liftDescription);
                     li.hover(

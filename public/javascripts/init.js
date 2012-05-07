@@ -35,9 +35,12 @@ $(document).ready(function () {
 
     function configureDatepicker(elemId) {
         if ($(elemId).length > 0) {
+            //We get the original value and set it again after changing dateFormat
+            //the field could be initialized before creating the datepicker (e.g. editing a lift)
+            var value = $(elemId).val() || new Date();
             $(elemId).datepicker();
-            $(elemId).datepicker( "option", "dateFormat", "dd/mm/yy" );
-            $(elemId).datepicker('setDate', new Date());
+            $(elemId).datepicker('option', 'dateFormat', 'dd/mm/yy');
+            $(elemId).datepicker('setDate', value);
         }
     }
 
