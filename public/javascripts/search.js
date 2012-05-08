@@ -22,6 +22,14 @@ $(document).ready(function () {
         var directionsService = new google.maps.DirectionsService();
         var directions = [];
 
+        $('.noEnterSubmit').keydown(function(event) {
+            if(event.keyCode == 13) {
+                event.preventDefault();
+                return false;
+            }
+        });
+
+
         form.submit(function (event) {
             event.preventDefault();
 

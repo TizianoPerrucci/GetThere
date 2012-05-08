@@ -4,12 +4,12 @@ div#search-form
   form(id='search-lift', method='post', action='/search')
     div
       label From:
-        input(id='search-from')
+        input.noEnterSubmit(id='search-from')
         input(id='search-from-lat', disabled='true')
         input(id='search-from-lng', disabled='true')
     div
       label To:
-        input(id='search-to')
+        input.noEnterSubmit(id='search-to')
         input(id='search-to-lat', disabled='true')
         input(id='search-to-lng', disabled='true')
     div

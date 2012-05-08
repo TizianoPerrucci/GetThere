@@ -26,8 +26,10 @@ var configureMapAutocompletion = function(elemId) {
             var latElem = elemId + '-lat';
 
             var place = autocomplete.getPlace();
-            $(lngElem).val(place.geometry.location.lng());
-            $(latElem).val(place.geometry.location.lat());
+            if (place.geometry) {
+                $(lngElem).val(place.geometry.location.lng());
+                $(latElem).val(place.geometry.location.lat());
+            }
         });
     });
 };
