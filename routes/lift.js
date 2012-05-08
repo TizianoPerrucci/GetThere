@@ -22,7 +22,9 @@ module.exports = function(model, app) {
         var lift = new Lift();
         lift.date = new Date();
         lift.from = new Origin();
+        lift.from.coord = [0, 0];
         lift.to = new Destination();
+        lift.to.coord = [0, 0];
         return lift;
     }
 

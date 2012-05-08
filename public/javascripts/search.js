@@ -14,8 +14,8 @@ $(document).ready(function () {
         map = new google.maps.Map(document.getElementById("map-canvas"), opt);
 
         //TODO default values??
-        configureToleranceControls(map, 10, 100);
-        configureTimeRangeControl(map, 1, 10);
+        configureToleranceControls(form, map, 10, 100);
+        configureTimeRangeControl(form, map, 1, 10);
 
         var from, to;
         var fromCircle, toCircle;
@@ -51,7 +51,7 @@ $(document).ready(function () {
             if (doSearch) {
                 var doSetBound = true;
                 if (from && to) {
-                    //if from and to didn't change from previous search don't set bounds
+                    //if from and to didn't change from previous search don't set bounds again
                     var prevFrom = from.getPosition();
                     var prevTo = to.getPosition();
                     doSetBound = prevFrom.lat() != from_lat || prevFrom.lng() != from_lng || prevTo.lat() != to_lat || prevTo.lng() != to_lng;
@@ -209,76 +209,75 @@ $(document).ready(function () {
                 $('#search-result').append("</lu>");
             }
         };
-
-        function configureToleranceControls(map, toleranceDefault, toleranceMax) {
-            var fromControl = $('<div class="slider"></div>').get(0);
-            fromControl.index = 1;
-
-            var fromSlider = $('<div></div>');
-            fromSlider.slider({
-                max:toleranceMax,
-                value:toleranceDefault,
-                slide: function( event, ui ) {
-                    $('#text-from-tolerance').val('Departure around ' + ui.value + 'Km');
-                    $('#search-from-tolerance').val(ui.value);
-                    form.submit();
-                }
-            });
-            fromControl.appendChild(fromSlider.get(0));
-
-            var fromTolerance = $('<input type="text" id="text-from-tolerance" />');
-            fromTolerance.val('Departure around ' + toleranceDefault + 'Km');
-            $('#search-from-tolerance').val(toleranceDefault);
-            fromControl.appendChild(fromTolerance.get(0));
-
-            map.controls[google.maps.ControlPosition.TOP_LEFT].push(fromControl);
-
-            var toControl = $('<div class="slider"></div>').get(0);
-            toControl.index = 1;
-
-            var toSlider = $('<div></div>');
-            toSlider.slider({
-                max:toleranceMax,
-                value:toleranceDefault,
-                slide: function( event, ui ) {
-                    $('#text-to-tolerance').val('Arrival around ' + ui.value + 'Km');
-                    $('#search-to-tolerance').val(ui.value);
-                    form.submit();
-                }
-            });
-            toControl.appendChild(toSlider.get(0));
-
-            var toTolerance = $('<input type="text" id="text-to-tolerance" />');
-            toTolerance.val('Arrival around ' + toleranceDefault + 'Km');
-            $('#search-to-tolerance').val(toleranceDefault);
-            toControl.appendChild(toTolerance.get(0));
-
-            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(toControl);
-        }
-
-        function configureTimeRangeControl(map, toleranceDefault, toleranceMax) {
-            var dateControl = $('<div class="slider"></div>').get(0);
-            dateControl.index = 1;
-
-            var toTolerance = $('<input type="text" id="text-date-tolerance" />');
-            toTolerance.val('Within ' + toleranceDefault + ' days');
-            $('#search-date-tolerance').val(toleranceDefault);
-            dateControl.appendChild(toTolerance.get(0));
-
-            var toSlider = $('<div></div>');
-            toSlider.slider({
-                max:toleranceMax,
-                value:toleranceDefault,
-                slide: function( event, ui ) {
-                    $('#text-date-tolerance').val('Within ' + ui.value + ' days');
-                    $('#search-date-tolerance').val(ui.value);
-                    form.submit();
-                }
-            });
-            dateControl.appendChild(toSlider.get(0));
-
-            map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(dateControl);
-        }
     }
-
 });
+
+var configureToleranceControls = function(form, map, toleranceDefault, toleranceMax) {
+    var fromControl = $('<div class="slider"></div>').get(0);
+    fromControl.index = 1;
+
+    var fromSlider = $('<div></div>');
+    fromSlider.slider({
+        max:toleranceMax,
+        value:toleranceDefault,
+        slide: function( event, ui ) {
+            $('#text-from-tolerance').val('Departure around ' + ui.value + 'Km');
+            $('#search-from-tolerance').val(ui.value);
+            form.submit();
+        }
+    });
+    fromControl.appendChild(fromSlider.get(0));
+
+    var fromTolerance = $('<input type="text" id="text-from-tolerance" />');
+    fromTolerance.val('Departure around ' + toleranceDefault + 'Km');
+    $('#search-from-tolerance').val(toleranceDefault);
+    fromControl.appendChild(fromTolerance.get(0));
+
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(fromControl);
+
+    var toControl = $('<div class="slider"></div>').get(0);
+    toControl.index = 1;
+
+    var toSlider = $('<div></div>');
+    toSlider.slider({
+        max:toleranceMax,
+        value:toleranceDefault,
+        slide: function( event, ui ) {
+            $('#text-to-tolerance').val('Arrival around ' + ui.value + 'Km');
+            $('#search-to-tolerance').val(ui.value);
+            form.submit();
+        }
+    });
+    toControl.appendChild(toSlider.get(0));
+
+    var toTolerance = $('<input type="text" id="text-to-tolerance" />');
+    toTolerance.val('Arrival around ' + toleranceDefault + 'Km');
+    $('#search-to-tolerance').val(toleranceDefault);
+    toControl.appendChild(toTolerance.get(0));
+
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(toControl);
+};
+
+var configureTimeRangeControl = function(form, map, toleranceDefault, toleranceMax) {
+    var dateControl = $('<div class="slider"></div>').get(0);
+    dateControl.index = 1;
+
+    var toTolerance = $('<input type="text" id="text-date-tolerance" />');
+    toTolerance.val('Within ' + toleranceDefault + ' days');
+    $('#search-date-tolerance').val(toleranceDefault);
+    dateControl.appendChild(toTolerance.get(0));
+
+    var toSlider = $('<div></div>');
+    toSlider.slider({
+        max:toleranceMax,
+        value:toleranceDefault,
+        slide: function( event, ui ) {
+            $('#text-date-tolerance').val('Within ' + ui.value + ' days');
+            $('#search-date-tolerance').val(ui.value);
+            form.submit();
+        }
+    });
+    dateControl.appendChild(toSlider.get(0));
+
+    map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(dateControl);
+};

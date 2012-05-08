@@ -29,8 +29,8 @@ li:hover {
 
 #search-result {
     float: left;
-    height: 300px;
-    margin: 10px;
+    width: 300px;
+    margin: 20px;
     padding: 0;
 }
 
