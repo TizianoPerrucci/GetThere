@@ -47,19 +47,23 @@ describe('Lift view', function () {
                 'lift[time]':'10:00',
                 'lift[time_flexibility]':'1h'
             }).submit(function (res, $) {
-                console.log('form submitted');
+                        console.log('form submitted');
 
-                //follows redirect!
-                res.should.have.status(200);
-                //$('ul').should.have.many('li');
+                        //follows redirect!
+                        res.should.have.status(200);
+                        //$('ul').should.have.many('li');
 
-                $('li').should.have.length(1);
-                console.log('found 1 lift');
+                        $('li').should.have.length(1);
+                        //TODO check lift elements
+                        console.log('found 1 lift');
 
-                done();
-            });
+                        done();
+                    });
         });
     });
+
+    //TODO
+    it('search should result in lifts');
 
 
 });

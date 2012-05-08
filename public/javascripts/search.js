@@ -14,7 +14,8 @@ $(document).ready(function () {
         map = new google.maps.Map(document.getElementById("map-canvas"), opt);
 
         //TODO default values??
-        configureToleranceControl(map, 10, 100);
+        configureToleranceControls(map, 10, 100);
+        configureTimeRangeControl(map, 1, 10);
 
         var from, to;
         var fromCircle, toCircle;
@@ -26,13 +27,14 @@ $(document).ready(function () {
 
             var from_lat = parseFloat($('#search-from-lat').val());
             var from_lng = parseFloat($('#search-from-lng').val());
+            var fromTolerance = parseFloat($('#search-from-tolerance').val());
             var to_lat = parseFloat($('#search-to-lat').val());
             var to_lng = parseFloat($('#search-to-lng').val());
-            var fromTolerance = parseFloat($('#search-from-tolerance').val());
             var toTolerance = parseFloat($('#search-to-tolerance').val());
             var date = $('#search-date').datepicker('getDate');
+            var dateTolerance = parseInt($('#search-date-tolerance').val());
             console.log('search lifts: (' + from_lat + ',' + from_lng + '), ' + fromTolerance + ', (' + to_lat + ',' + to_lng + '), ' +
-                    toTolerance + ', ' + date);
+                    toTolerance + ', ' + date + ', ' + dateTolerance);
 
             function isValidCoord(c) {
                 return c >= -180 && c < 180;
@@ -40,7 +42,7 @@ $(document).ready(function () {
 
             var doSearch = false;
             if (isValidCoord(from_lat) && isValidCoord(from_lng) && isValidCoord(to_lat) && isValidCoord(to_lng) &&
-                    fromTolerance >= 0 && toTolerance >= 0 && date) {
+                    fromTolerance >= 0 && toTolerance >= 0 && date && dateTolerance >= 0) {
                 doSearch = true
             } else {
                 alert("WARNING: Some inputs are not valid");
@@ -116,9 +118,7 @@ $(document).ready(function () {
                     strokeWeight: 2
                 });
 
-                //TODO dayRange with control
-                var dayRange = 1;
-                now.searchLift(from_lat, from_lng, fromTolerance, to_lat, to_lng, toTolerance, date, dayRange);
+                now.searchLift(from_lat, from_lng, fromTolerance, to_lat, to_lng, toTolerance, date, dateTolerance);
             }
         });
 
@@ -200,12 +200,11 @@ $(document).ready(function () {
             }
         };
 
-        function configureToleranceControl(map, toleranceDefault, toleranceMax) {
-            var fromControl = $('<div></div>').get(0);
+        function configureToleranceControls(map, toleranceDefault, toleranceMax) {
+            var fromControl = $('<div class="slider"></div>').get(0);
             fromControl.index = 1;
-            fromControl.style.padding = '5px';
 
-            var fromSlider = $('<div style="width: 200px"></div>');
+            var fromSlider = $('<div></div>');
             fromSlider.slider({
                 max:toleranceMax,
                 value:toleranceDefault,
@@ -224,11 +223,10 @@ $(document).ready(function () {
 
             map.controls[google.maps.ControlPosition.TOP_LEFT].push(fromControl);
 
-            var toControl = $('<div></div>').get(0);
+            var toControl = $('<div class="slider"></div>').get(0);
             toControl.index = 1;
-            toControl.style.padding = '5px';
 
-            var toSlider = $('<div style="width: 200px"></div>');
+            var toSlider = $('<div></div>');
             toSlider.slider({
                 max:toleranceMax,
                 value:toleranceDefault,
@@ -246,6 +244,30 @@ $(document).ready(function () {
             toControl.appendChild(toTolerance.get(0));
 
             map.controls[google.maps.ControlPosition.TOP_RIGHT].push(toControl);
+        }
+
+        function configureTimeRangeControl(map, toleranceDefault, toleranceMax) {
+            var dateControl = $('<div class="slider"></div>').get(0);
+            dateControl.index = 1;
+
+            var toTolerance = $('<input type="text" id="text-date-tolerance" />');
+            toTolerance.val('Within ' + toleranceDefault + ' days');
+            $('#search-date-tolerance').val(toleranceDefault);
+            dateControl.appendChild(toTolerance.get(0));
+
+            var toSlider = $('<div></div>');
+            toSlider.slider({
+                max:toleranceMax,
+                value:toleranceDefault,
+                slide: function( event, ui ) {
+                    $('#text-date-tolerance').val('Within ' + ui.value + ' days');
+                    $('#search-date-tolerance').val(ui.value);
+                    form.submit();
+                }
+            });
+            dateControl.appendChild(toSlider.get(0));
+
+            map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(dateControl);
         }
     }
 

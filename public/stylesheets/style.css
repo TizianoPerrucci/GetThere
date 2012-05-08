@@ -7,6 +7,10 @@ a {
     color: #00B7FF;
 }
 
+li:hover {
+    color:red;
+}
+
 #search-form {
     float: left;
     width: 250px;
@@ -30,7 +34,13 @@ a {
     padding: 0;
 }
 
-#text-from-tolerance {
+.slider {
+    width: 200px;
+    padding-top: 5px;
+    padding-bottom: 20px;
+}
+
+#text-from-tolerance  {
     border: 0;
     padding: 0;
     color: #FFFF00;
@@ -50,6 +60,13 @@ a {
     background-color: #aaaaaa;
 }
 
-li:hover {
-    color:red;
+#text-date-tolerance {
+    border: 0;
+    padding: 0;
+    color: #0000FF;
+    font-weight:bold;
+    width:200px;
+    text-align:center;
+    background-color: #aaaaaa;
 }
+

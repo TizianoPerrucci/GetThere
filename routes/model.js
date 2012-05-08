@@ -21,7 +21,7 @@ module.exports = {
             /**
              * http://www.mongodb.org/display/DOCS/Geospatial+Indexing
              *
-             * --> To make sure coordinate ordering is preserved from all languages use a 2 element array.
+             * --> To make sure coordinate ordering is preserved from all languages use a 2 element array [lng, lat].
              *
              * --> MongoDB limit: can't have 2 special fields, code 13033
              *
