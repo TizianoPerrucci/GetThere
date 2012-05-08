@@ -49,30 +49,40 @@ $(document).ready(function () {
             }
 
             if (doSearch) {
-                var southLat;
-                var northLat;
-                if (from_lat < to_lat) {
-                    southLat = from_lat;
-                    northLat = to_lat;
-                } else {
-                    southLat = to_lat;
-                    northLat = from_lat;
-                }
-                var westLng;
-                var eastLng;
-                if (from_lng < to_lng) {
-                    westLng = from_lng;
-                    eastLng = to_lng;
-                } else {
-                    westLng = to_lng;
-                    eastLng = from_lng;
+                var doSetBound = true;
+                if (from && to) {
+                    //if from and to didn't change from previous search don't set bounds
+                    var prevFrom = from.getPosition();
+                    var prevTo = to.getPosition();
+                    doSetBound = prevFrom.lat() != from_lat || prevFrom.lng() != from_lng || prevTo.lat() != to_lat || prevTo.lng() != to_lng;
                 }
 
-                var southWest = new google.maps.LatLng(southLat, westLng);
-                var northEast = new google.maps.LatLng(northLat, eastLng);
-                console.log('map bounds: ', southWest, northEast);
+                if (doSetBound) {
+                    var southLat;
+                    var northLat;
+                    if (from_lat < to_lat) {
+                        southLat = from_lat;
+                        northLat = to_lat;
+                    } else {
+                        southLat = to_lat;
+                        northLat = from_lat;
+                    }
+                    var westLng;
+                    var eastLng;
+                    if (from_lng < to_lng) {
+                        westLng = from_lng;
+                        eastLng = to_lng;
+                    } else {
+                        westLng = to_lng;
+                        eastLng = from_lng;
+                    }
 
-                map.fitBounds(new google.maps.LatLngBounds(southWest, northEast));
+                    var southWest = new google.maps.LatLng(southLat, westLng);
+                    var northEast = new google.maps.LatLng(northLat, eastLng);
+                    console.log('map bounds: ', southWest, northEast);
+
+                    map.fitBounds(new google.maps.LatLngBounds(southWest, northEast));
+                }
 
                 //reset search input
                 if (from) from.setMap(null);

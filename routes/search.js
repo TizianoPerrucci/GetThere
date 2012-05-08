@@ -9,7 +9,7 @@ module.exports = function(app) {
         //on the client Google Map uses (lat, lng) order
         var self = this;
 
-        //TODO some validation
+        //TODO validation
 
         //MongoDB uses as order [lng, lat]
         model.searchByDistanceAndDate([+from_lng, +from_lat], fromTolerance, [+to_lng, +to_lat], toTolerance, date, dayRange, function(lifts) {

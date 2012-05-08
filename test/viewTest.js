@@ -51,6 +51,7 @@ describe('Lift view', function () {
 
                         //follows redirect!
                         res.should.have.status(200);
+
                         //$('ul').should.have.many('li');
 
                         $('li').should.have.length(1);
@@ -62,7 +63,7 @@ describe('Lift view', function () {
         });
     });
 
-    //TODO
+    //TODO test
     it('search should result in lifts');
 
 
