@@ -133,7 +133,6 @@ module.exports = {
 
                 var lowerBoundDate = moment(date.valueOf()).subtract('days', dayRange).toDate();
                 var upperBoundDate = moment(date.valueOf()).add('days', dayRange).toDate();
-                console.log(lowerBoundDate, upperBoundDate);
 
                 //includes date boundaries
                 Lift.find({'from': {$in: origins}, 'to': {$in: dests}, 'date': {$gte: lowerBoundDate, $lte: upperBoundDate} })

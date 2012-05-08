@@ -73,8 +73,8 @@ describe('Lift model', function () {
 
     it('should update', function (done) {
         var date = moment('5-5-2012 10:00', 'MM-DD-YYYY HH:mm').toDate();
-        var coord = {f:'a', flng:1, flat:2, t:'b', tlng:8, tlat:9, d: date};
-        insertAndLoad(coord, function (lift) {
+        var info = {f:'a', flng:1, flat:2, t:'b', tlng:8, tlat:9, d: date};
+        insertAndLoad(info, function (lift) {
             var liftUpdate = lift;
             var newDate = moment('10-10-2019 11:33', 'MM-DD-YYYY HH:mm').toDate();
             liftUpdate.date = newDate;
@@ -112,8 +112,8 @@ describe('Lift model', function () {
 
     it('should remove', function (done) {
         var date = moment('5-5-2012 10:00', 'MM-DD-YYYY HH:mm').toDate();
-        var coord = {f:'a', flng:1, flat:2, t:'b', tlng:8, tlat:9, d: date};
-        insertAndLoad(coord, function (lift) {
+        var info = {f:'a', flng:1, flat:2, t:'b', tlng:8, tlat:9, d: date};
+        insertAndLoad(info, function (lift) {
             lift.removeAll(function () {
 
                 Lift.findOne({}, function (err, l) {
@@ -138,11 +138,11 @@ describe('Lift model', function () {
 
     it('should search by distance and date', function (done) {
         var date1 = moment('5-4-2012 10:00', 'MM-DD-YYYY HH:mm').toDate();
-        var coord1 = {f:'from1', flng:14.18, flat:42.30, t:'to1', tlng:11.57, tlat:48.12, d: date1};
-        insertAndLoad(coord1, function (lift) {
+        var info1 = {f:'from1', flng:14.18, flat:42.30, t:'to1', tlng:11.57, tlat:48.12, d: date1};
+        insertAndLoad(info1, function (lift) {
             var date2 = moment('5-6-2012 10:00', 'MM-DD-YYYY HH:mm').toDate();
-            var coord2 = {f:'from2', flng:14.4, flat:42.9, t:'to2', tlng:11.8, tlat:48.45, d: date2};
-            insertAndLoad(coord2, function (lift) {
+            var info2 = {f:'from2', flng:14.4, flat:42.9, t:'to2', tlng:11.8, tlat:48.45, d: date2};
+            insertAndLoad(info2, function (lift) {
 
                 //[lat, lng]
                 var nearFrom = [14.2, 42.68];
