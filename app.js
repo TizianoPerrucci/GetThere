@@ -34,13 +34,11 @@ var config = konphyg('conf');
 var model = require('./routes/model');
 model.initialize(config);
 
-var view = require('./routes/lift')(model, app);
+var search = require('./routes/search.js')(app, model);
+var view = require('./routes/lift')(app, model);
 
 
 var port = process.env.PORT || 8080;
 app.listen(port, function () {
     console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
-
-
-var search = require('./routes/search.js')(app);

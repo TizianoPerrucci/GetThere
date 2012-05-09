@@ -1,6 +1,6 @@
 var moment = require('moment');
 
-module.exports = function(model, app) {
+module.exports = function(app, model) {
     var Lift = model.lift();
     var Origin = model.origin();
     var Destination = model.destination();

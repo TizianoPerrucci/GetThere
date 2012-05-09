@@ -6,8 +6,6 @@ var app = require('../app');
 var tobi = require('tobi'),
         browser = tobi.createBrowser(parseInt(process.env.PORT), 'localhost', {external: true});
 
-// browser = tobi.createBrowser(app); //TODO doesn't seem to work with tobi 0.3.2, express 2.5.8, node 0.6.14
-
 var konphyg = require('konphyg')(__dirname + '/../config');
 var config = konphyg('conf');
 

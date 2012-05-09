@@ -15,7 +15,7 @@ $(document).ready(function () {
 
         //TODO default values??
         configureToleranceControls(form, map, 10, 100);
-        configureTimeRangeControl(form, map, 1, 10);
+        configureTimeRangeControl(form, map, 1, 30);
 
         var from, to;
         var fromCircle, toCircle;
@@ -23,7 +23,7 @@ $(document).ready(function () {
         var directions = [];
 
         $('.noEnterSubmit').keydown(function(event) {
-            if(event.keyCode == 13) {
+            if (event.keyCode == 13) {
                 event.preventDefault();
                 return false;
             }
@@ -33,15 +33,15 @@ $(document).ready(function () {
         form.submit(function (event) {
             event.preventDefault();
 
-            var from_lat = parseFloat($('#search-from-lat').val());
-            var from_lng = parseFloat($('#search-from-lng').val());
+            var fromLat = parseFloat($('#search-from-lat').val());
+            var fromLng = parseFloat($('#search-from-lng').val());
             var fromTolerance = parseFloat($('#search-from-tolerance').val());
-            var to_lat = parseFloat($('#search-to-lat').val());
-            var to_lng = parseFloat($('#search-to-lng').val());
+            var toLat = parseFloat($('#search-to-lat').val());
+            var toLng = parseFloat($('#search-to-lng').val());
             var toTolerance = parseFloat($('#search-to-tolerance').val());
             var date = $('#search-date').datepicker('getDate');
             var dateTolerance = parseInt($('#search-date-tolerance').val());
-            console.log('search lifts: (' + from_lat + ',' + from_lng + '), ' + fromTolerance + ', (' + to_lat + ',' + to_lng + '), ' +
+            console.log('search lifts: (' + fromLat + ',' + fromLng + '), ' + fromTolerance + ', (' + toLat + ',' + toLng + '), ' +
                     toTolerance + ', ' + date + ', ' + dateTolerance);
 
             function isValidCoord(c) {
@@ -49,7 +49,7 @@ $(document).ready(function () {
             }
 
             var doSearch = false;
-            if (isValidCoord(from_lat) && isValidCoord(from_lng) && isValidCoord(to_lat) && isValidCoord(to_lng) &&
+            if (isValidCoord(fromLat) && isValidCoord(fromLng) && isValidCoord(toLat) && isValidCoord(toLng) &&
                     fromTolerance >= 0 && toTolerance >= 0 && date && dateTolerance >= 0) {
                 doSearch = true
             } else {
@@ -62,27 +62,27 @@ $(document).ready(function () {
                     //if from and to didn't change from previous search don't set bounds again
                     var prevFrom = from.getPosition();
                     var prevTo = to.getPosition();
-                    doSetBound = prevFrom.lat() != from_lat || prevFrom.lng() != from_lng || prevTo.lat() != to_lat || prevTo.lng() != to_lng;
+                    doSetBound = prevFrom.lat() != fromLat || prevFrom.lng() != fromLng || prevTo.lat() != toLat || prevTo.lng() != toLng;
                 }
 
                 if (doSetBound) {
                     var southLat;
                     var northLat;
-                    if (from_lat < to_lat) {
-                        southLat = from_lat;
-                        northLat = to_lat;
+                    if (fromLat < toLat) {
+                        southLat = fromLat;
+                        northLat = toLat;
                     } else {
-                        southLat = to_lat;
-                        northLat = from_lat;
+                        southLat = toLat;
+                        northLat = fromLat;
                     }
                     var westLng;
                     var eastLng;
-                    if (from_lng < to_lng) {
-                        westLng = from_lng;
-                        eastLng = to_lng;
+                    if (fromLng < toLng) {
+                        westLng = fromLng;
+                        eastLng = toLng;
                     } else {
-                        westLng = to_lng;
-                        eastLng = from_lng;
+                        westLng = toLng;
+                        eastLng = fromLng;
                     }
 
                     var southWest = new google.maps.LatLng(southLat, westLng);
@@ -98,8 +98,8 @@ $(document).ready(function () {
                 if (to) to.setMap(null);
                 if (toCircle) toCircle.setMap(null);
 
-                var fromPosition = new google.maps.LatLng(from_lat, from_lng);
-                var toPosition = new google.maps.LatLng(to_lat, to_lng);
+                var fromPosition = new google.maps.LatLng(fromLat, fromLng);
+                var toPosition = new google.maps.LatLng(toLat, toLng);
                 var fromRadius = fromTolerance * 1000; //Google wants it in meters
                 var toRadius = toTolerance * 1000; //Google wants it in meters
 
@@ -136,7 +136,17 @@ $(document).ready(function () {
                     strokeWeight: 2
                 });
 
-                now.searchLift(from_lat, from_lng, fromTolerance, to_lat, to_lng, toTolerance, date, dateTolerance);
+                var options = {
+                    'fromLat': fromLat,
+                    'fromLng': fromLng,
+                    'fromTol': fromTolerance,
+                    'toLat':toLat,
+                    'toLng':toLng,
+                    'toTol':toTolerance,
+                    'date':date,
+                    'dateTol':dateTolerance
+                };
+                now.searchLift(options);
             }
         });
 
