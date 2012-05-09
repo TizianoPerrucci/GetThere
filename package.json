@@ -13,7 +13,6 @@
         "moment":"1.6.2"
     },
     "devDependencies":{
-        "expresso":"0.9.2",
         "mocha":"1.0.1",
         "should":"0.6.1",
         "tobi":"0.3.2"
