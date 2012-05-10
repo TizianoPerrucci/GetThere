@@ -53,7 +53,8 @@ $(document).ready(function () {
                     fromTolerance >= 0 && toTolerance >= 0 && date && dateTolerance >= 0) {
                 doSearch = true
             } else {
-                alert("WARNING: Some inputs are not valid");
+                //TODO validation
+                console.log("WARNING: Some inputs are not valid");
             }
 
             if (doSearch) {
