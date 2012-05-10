@@ -11,6 +11,8 @@ $(document).ready(function () {
     configureMapAutocompletion('#search-to');
     configureDatepicker('#search-date');
     configureClockpick('#search-time');
+
+    preventSubmission();
 });
 
 var configureMapAutocompletion = function(elemId) {
@@ -62,4 +64,13 @@ var focusIfExist = function(elemId) {
     if ($(elemId).length > 0) {
         $(elemId).focus();
     }
-}
+};
+
+var preventSubmission = function() {
+    $('.noEnterSubmit').keydown(function(event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+            return false;
+        }
+    });
+};
