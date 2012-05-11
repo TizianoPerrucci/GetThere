@@ -1,13 +1,13 @@
 div
   label From:
     input.noEnterSubmit(id='lift-from', name='lift[from]', value=lift.from.city || '')
-    input(id='lift-from-lng', name='lift[from_lng]', value=lift.from.coord[0] || '', disabled='true')
-    input(id='lift-from-lat', name='lift[from_lat]', value=lift.from.coord[1] || '', disabled='true')
+    input(id='lift-from-lng', name='lift[from_lng]', value=lift.from.coord[0] || '', readonly='readonly')
+    input(id='lift-from-lat', name='lift[from_lat]', value=lift.from.coord[1] || '', readonly='readonly')
 div
   label To:
     input.noEnterSubmit(id='lift-to', name='lift[to]', value=lift.to.city || '')
-    input(id='lift-to-lng', name='lift[to_lng]', value=lift.to.coord[0] || '', disabled='true')
-    input(id='lift-to-lat', name='lift[to_lat]', value=lift.to.coord[1] || '', disabled='true')
+    input(id='lift-to-lng', name='lift[to_lng]', value=lift.to.coord[0] || '', readonly='readonly')
+    input(id='lift-to-lat', name='lift[to_lat]', value=lift.to.coord[1] || '', readonly='readonly')
 div
   label Date:
     input(id='lift-date', name='lift[date]', value=moment(lift.date).format('DD/MM/YYYY') || '')
