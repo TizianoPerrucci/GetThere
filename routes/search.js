@@ -3,7 +3,6 @@ var nowjs = require("now");
 module.exports = function(app, model) {
     //on heroku websocket doesn't work
     var everyone = nowjs.initialize(app, {clientWrite:true, socketio:{'log level':1, transports:['xhr-polling', 'jsonp-polling']}});
-
     everyone.now.searchLift = function(options) {
         var self = this;
 

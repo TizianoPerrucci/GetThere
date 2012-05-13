@@ -2,6 +2,8 @@ var initialized = false;
 
 var mongoose = require('mongoose');
 var moment = require('moment');
+var everyauth = require('everyauth');
+var mongooseAuth = require('mongoose-auth');
 
 module.exports = {
     initialize: function(config) {
@@ -91,6 +93,52 @@ module.exports = {
             mongoose.model('Lift', Lift);
             mongoose.model('Origin', Origin);
             mongoose.model('Destination', Destination);
+
+            //
+
+            var UserSchema = new Schema({}), User;
+
+            everyauth.debug = true;
+
+            // STEP 1: Schema Decoration and Configuration for the Routing
+            UserSchema.plugin(mongooseAuth, {
+                // Here, we attach your User model to every module
+                everymodule: {
+                    everyauth: {
+                        User: function () {
+                            return User;
+                        }
+                    }
+                },
+                google: {
+                    everyauth: {
+                        myHostname: 'http://dev.getthere.com:8080'
+                        , appId: config.google.clientId
+                        , appSecret: config.google.clientSecret
+                        , scope: ['https://www.googleapis.com/auth/userinfo.email']
+                        , redirectPath: '/lifts'
+                    }
+                },
+                twitter: {
+                    everyauth: {
+                        myHostname: 'http://dev.getthere.com:8080'
+                        , consumerKey: config.twitter.consumerKey
+                        , consumerSecret: config.twitter.consumerSecret
+                        , redirectPath: '/lifts'
+                    }
+                }
+                //, facebook: {
+                //    everyauth: {
+                //        myHostname: 'http://localhost:3000'
+                //        , appId: 'YOUR APP ID HERE'
+                //        , appSecret: 'YOUR APP SECRET HERE'
+                //        , redirectPath: '/'
+                //    }
+                //}
+            });
+
+            User = mongoose.model('User', UserSchema);
+            console.log('Initialized Model.');
         }
     },
 
@@ -145,6 +193,10 @@ module.exports = {
                         })
             })
         })
+    },
+
+    user: function() {
+        return mongoose.model('User');
     }
     
 };

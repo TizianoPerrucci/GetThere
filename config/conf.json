@@ -1,5 +1,13 @@
 {
     "mongo": {
          "dbUri": "mongodb://localhost/lift-dev"
+    },
+    "google": {
+        "clientId": "234058216073.apps.googleusercontent.com",
+        "clientSecret": "EztjJ9Wec2go0uC-g1QsR6bH"
+    },
+    "twitter": {
+        "consumerKey": "WMH6fECsNnQcSfQB3gzDw",
+        "consumerSecret": "Hr53Gr7r8ZWpKE6VlcdnjvNXgZCo8PSBJ8zWYwOpZc"
     }
 }

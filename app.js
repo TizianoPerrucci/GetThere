@@ -1,15 +1,24 @@
-var express = require('express'),
-        app = module.exports = express.createServer();
+var express = require('express');
+var mongooseAuth = require('mongoose-auth');
 
+var konphyg = require('konphyg')(__dirname + '/config');
+var config = konphyg('conf');
+var model = require('./routes/model');
+model.initialize(config);
+
+app = module.exports = express.createServer();
 
 app.configure(function () {
     app.set('views', __dirname + '/views');
     app.set('view engine', 'jade');
     //app.use(express.logger());
     app.use(express.bodyParser());
-    app.use(express.methodOverride());
-    app.use(app.router);
     app.use(express.static(__dirname + '/public'));
+    app.use(express.cookieParser());
+    app.use(express.session({ secret: 'blabla'}));
+    app.use(express.methodOverride());
+    app.use(mongooseAuth.middleware());
+    //app.use(app.router); //Important: do not use app.router, Let express do this upon your first req.
 });
 
 app.configure('development', function () {
@@ -17,6 +26,7 @@ app.configure('development', function () {
 });
 
 app.configure('test', function () {
+    app.use(express.errorHandler({ dumpExceptions:true, showStack:true }));
     app.set('view options', {
         pretty:true
     });
@@ -28,12 +38,8 @@ app.configure('production', function () {
 });
 
 
-var konphyg = require('konphyg')(__dirname + '/config');
-var config = konphyg('conf');
+mongooseAuth.helpExpress(app);
 
-
-var model = require('./routes/model');
-model.initialize(config);
 
 var search = require('./routes/search.js')(app, model);
 var view = require('./routes/lift')(app, model);

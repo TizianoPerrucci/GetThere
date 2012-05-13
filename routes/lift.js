@@ -12,7 +12,7 @@ module.exports = function(app, model) {
     app.get('/lifts', function (req, res) {
         Lift.find({}).populate('from').populate('to').run(function (err, lifts) {
             if (err) throw err;
-            console.log('Listing lifts: ' + lifts);
+            //console.log('Listing lifts: ' + lifts);
             res.render('./lifts/list', {title:'All lifts', lifts:lifts, moment:moment});
         });
     });
