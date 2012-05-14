@@ -78,3 +78,8 @@ li:hover {
     background-color: #aaaaaa;
 }
 
+.extLogin {
+    margin-left: 5px;
+    border: 0;
+    padding: 0;
+}

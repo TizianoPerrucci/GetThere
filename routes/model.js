@@ -33,27 +33,27 @@ module.exports = {
              * having multiple geo indexes will produce undesirable behavior.
              *
              **/
-            var Lift = new Schema({
+            var LiftSchema = new Schema({
                 date: {type: Date, index: true},
                 time_flexibility: String,
                 from: {type:ObjectId, ref:'Origin'},
                 to: {type:ObjectId, ref:'Destination'}
             });
-            var Origin = new Schema({
+            var OriginSchema = new Schema({
                 //_lift: {type: ObjectId, ref: 'Lift'},
                 city: String,
                 coord: [Number, Number] //use array to force mongoose to keep order [lng, lat]
             });
-            var Destination = new Schema({
+            var DestinationSchema = new Schema({
                 //_lift: {type: ObjectId, ref: 'Lift'},
                 city: String,
                 coord: [Number, Number] //use array to force mongoose to keep order [lng, lat]
             });
 
-            Origin.index({coord: '2d'});
-            Destination.index({coord: '2d'});
+            OriginSchema.index({coord: '2d'});
+            DestinationSchema.index({coord: '2d'});
 
-            Lift.methods.saveWith = function (origin, dest, callback) {
+            LiftSchema.methods.saveWith = function (origin, dest, callback) {
                 var self = this;
                 origin.save(function (err) {
                     if (err) throw err;
@@ -71,7 +71,7 @@ module.exports = {
                 });
             };
 
-            Lift.methods.removeAll = function (callback) {
+            LiftSchema.methods.removeAll = function (callback) {
                 var self = this;
                 var origin = self.from;
                 var dest = self.to;
@@ -90,17 +90,17 @@ module.exports = {
                 })
             };
 
-            mongoose.model('Lift', Lift);
-            mongoose.model('Origin', Origin);
-            mongoose.model('Destination', Destination);
+            mongoose.model('Lift', LiftSchema);
+            mongoose.model('Origin', OriginSchema);
+            mongoose.model('Destination', DestinationSchema);
 
             //
 
-            var UserSchema = new Schema({}), User;
+            var UserSchema = new Schema({});
+            var User;
 
-            everyauth.debug = true;
+            //everyauth.debug = true;
 
-            // STEP 1: Schema Decoration and Configuration for the Routing
             UserSchema.plugin(mongooseAuth, {
                 // Here, we attach your User model to every module
                 everymodule: {
@@ -109,17 +109,20 @@ module.exports = {
                             return User;
                         }
                     }
-                },
-                google: {
+                }
+                , google: {
                     everyauth: {
                         myHostname: 'http://dev.getthere.com:8080'
                         , appId: config.google.clientId
                         , appSecret: config.google.clientSecret
-                        , scope: ['https://www.googleapis.com/auth/userinfo.email']
+                        , scope: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile'
                         , redirectPath: '/lifts'
+                        //, findOrCreateUser: function (sess, accessTok, accessTokExtra, googleUser) {
+                        //    console.log('user', googleUser);
+                        //}
                     }
-                },
-                twitter: {
+                }
+                , twitter: {
                     everyauth: {
                         myHostname: 'http://dev.getthere.com:8080'
                         , consumerKey: config.twitter.consumerKey
@@ -127,18 +130,66 @@ module.exports = {
                         , redirectPath: '/lifts'
                     }
                 }
-                //, facebook: {
-                //    everyauth: {
-                //        myHostname: 'http://localhost:3000'
-                //        , appId: 'YOUR APP ID HERE'
-                //        , appSecret: 'YOUR APP SECRET HERE'
-                //        , redirectPath: '/'
-                //    }
-                //}
+                , github: {
+                    everyauth: {
+                        myHostname: 'http://dev.getthere.com:8080'
+                        , appId: config.github.clientId
+                        , appSecret: config.github.secret
+                        , redirectPath: '/lifts'
+                    }
+                }
+
+                , password: {
+                    loginWith: 'email'
+                    , extraParams: {
+                        phone: String
+                        , name: {
+                            first: String
+                            , last: String
+                        }
+                    }
+                    , everyauth: {
+                        getLoginPath: '/login'
+                        , postLoginPath: '/login'
+                        , loginView: 'login.jade'
+                        , getRegisterPath: '/register'
+                        , postRegisterPath: '/register'
+                        , registerView: 'register.jade'
+                        , loginSuccessRedirect: '/'
+                        , registerSuccessRedirect: '/'
+                    }
+                }
             });
 
+            //UserSchema.statics.createWithGoogleOAuth = function(googleUser, accessToken, accessTokenExtra, callback) {
+            //    console.log(googleUser);
+            //};
+
+            UserSchema.statics.createWithGithub = function (ghUser, accessToken, callback) {
+                //TODO email should be valid
+
+                var params = {
+                    github: {
+                        id: ghUser.id
+                        , type: ghUser.type
+                        , login: ghUser.login
+                        , gravatarId: ghUser.gravatar_id
+                        , name: ghUser.name
+                        , email: ghUser.email
+                        , location: ghUser.location
+                        , permission: ghUser.permission
+                        , createdAt: ghUser.created_at
+                    }
+                };
+
+                // We do this if password module is enabled
+                params[everyauth.password.loginKey()] = "github:" + ghUser.id; // Hack because of way mongodb treate unique indexes
+
+                this.create(params, callback);
+            };
+
             User = mongoose.model('User', UserSchema);
-            console.log('Initialized Model.');
+            console.log('Model Initialized.');
         }
     },
 

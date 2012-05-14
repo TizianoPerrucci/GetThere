@@ -9,5 +9,9 @@
     "twitter": {
         "consumerKey": "WMH6fECsNnQcSfQB3gzDw",
         "consumerSecret": "Hr53Gr7r8ZWpKE6VlcdnjvNXgZCo8PSBJ8zWYwOpZc"
+    },
+    "github": {
+        "clientId":"5c830117c8fca025d702",
+        "secret":"918efa70d15792e58d51039612238d81633c4610"
     }
 }
