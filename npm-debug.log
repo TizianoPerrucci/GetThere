@@ -1,0 +1,4 @@
+info it worked if it ends with ok
+verbose cli [ 'node', '/usr/local/bin/npm', 'install', '-d' ]
+info using npm@1.1.21
+info using node@v0.6.18
