@@ -2,7 +2,7 @@ Install node.js http://nodejs.org/#download
 Install foreman https://github.com/ddollar/foreman
 
 Run the application:
-$ foreman start
+$ NODE_ENV=production foreman start
 
 
 --------------- Developer info ---------------
